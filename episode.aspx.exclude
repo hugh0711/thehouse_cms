@@ -1,0 +1,482 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPageInner2.master" AutoEventWireup="false" CodeFile="episode.aspx.vb" Inherits="episode" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<%@ Register assembly="Flan.Controls" namespace="Flan.Controls" tagprefix="cc1" %>
+
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <meta property="og:title" content="title" runat="server" id="share_title" />
+    <meta property="og:description" content="description"  runat="server" id="share_description" />
+    <meta property="og:image" content="thumbnail_image" runat="server" id="share_image" />
+
+	<link href="css/jquery.neosmart.fb.wall.css" rel="stylesheet" type="text/css"/>
+	<link href="css/tinybox.css" rel="stylesheet" type="text/css"/>
+
+	<script src="js/jquery.neosmart.fb.wall.js" type="text/javascript"></script>
+	<script src="js/tinybox.js" type="text/javascript"></script>
+	<script src="js/jquery.autoresize.min.js" type="text/javascript"></script>
+	<script src="js/comment.js" type="text/javascript"></script>
+
+    <script src="https://connect.facebook.net/en_US/all.js" type="text/javascript"></script>
+	
+	<style type="text/css">
+	    .ajax__tab_default .ajax__tab_tab { color:#000; }
+	</style>
+	<script type="text/javascript">
+	    var accessToken = '<%=AccessToken %>';
+	    var replyWatermarkText = "<%= ReplyWatermarkText %>";
+        var fbId = '<%=FBID %>';
+        var fbName = '<%=FBName %>';
+
+	    $(document).ready(function () {
+
+	        $('#fb-comment').fbWall({
+	            id: '<%=FacebookID%>',
+	            accessToken: '<%=String.Format("{0}|{1}", ConfigurationManager.AppSettings("FacebookAppID"), ConfigurationManager.AppSettings("FacebookAppSecret")) %>',
+	            showGuestEntries: true,
+	            showComments: true,
+	            max: 20,
+	            timeConversion: 24
+	        });
+
+	        $(".FBConnectButton").bind("click", function () {
+	            PageMethods.AddViewCount(<%=EpisodeID %>, '<%=Username %>', onViewAdded);
+	        });
+            
+	        $("#btn-dim-screen").bind("click", function () {
+	            dimScreen();
+	        });
+
+	        $(document).live("keyup", function (e) {
+	            if ((e.keyCode) == 27) {
+	                disableDimScreen();
+	            }
+	        });
+	        $("#dim-close").live("click", function (e) {
+	            disableDimScreen();
+	        });
+
+
+	    });
+
+        function onViewAdded() { }
+
+	    function dimScreen() {
+	        if ($(".dim-panel").length == 0) {
+	            $("body").append('<div id="dim-panel" class="mask" style="display:none;"></div><div id="dim-close" class="tclose" style="z-index:1000;"></div>');
+	        };
+	        $("#dim-panel").fadeTo("fast", 0.8);
+	        var video = $("iframe:first");
+            var top = video.offset().top - 10;
+            var left = video.offset().left + video.width() + 20;
+            $("#dim-close").offset({ top: top, left: left });
+	    }
+
+	    function disableDimScreen() {
+	        $("#dim-panel").animate({ opacity: 0 }).hide();
+	        $("#dim-close").hide();
+	    }
+	</script>
+	
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <asp:HiddenField runat="server" ID="hfdProductID" />
+    
+    <asp:PlaceHolder runat="server" ID="phdNA">
+        <br />
+        <br />
+        <h1><asp:Label runat="server" ID="lblNAMessage"></asp:Label></h1>
+    </asp:PlaceHolder>
+
+    <asp:PlaceHolder runat="server" ID="phdInfo">
+        <div class="section-title">
+            <%--<span class="section-title-quot">&raquo;</span>--%>
+            <asp:HyperLink runat="server" ID="lnkChannel"></asp:HyperLink>
+            <span class="section-title-quot">&raquo;</span>
+            <asp:HyperLink runat="server" ID="lnkProgram"></asp:HyperLink>
+            <br />
+            <span class="section-title-quot">&raquo;</span>
+            <asp:Literal runat="server" ID="txtEpisode" Text="Episode"></asp:Literal> 
+        </div>
+        <asp:Literal runat="server" ID="txtVideoFrame"></asp:Literal>
+        <div id="video-description">
+            <asp:Literal runat="server" ID="lblDescription"></asp:Literal>
+        </div>
+        <div class="badge">
+            <div class="badge-item">
+            <a name="fb_share" ></a> 
+            <script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript">
+            </script>
+            </div>
+
+            <div class="badge-item">
+                <asp:UpdatePanel runat="server" ID="LikeUpdatePanel" UpdateMode="Conditional">
+                    <Triggers>
+                        <asp:AsyncPostBackTrigger ControlID="btnLikeEpisode" EventName="Click" />
+                        <asp:AsyncPostBackTrigger ControlID="btnUnlikeEpisode" EventName="Click" />
+                    </Triggers>
+                    <ContentTemplate>
+                        <asp:Label runat="server" ID="lblLikeEpside" CssClass="like"></asp:Label>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </div>
+                        
+            <asp:Panel runat="server" ID="pnlMemberPanel" CssClass="badge-item">
+                <asp:UpdatePanel runat="server" ID="UpdateFavVideo" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <ul class="button-list">
+                        <li>
+                        <asp:LinkButton runat="server" ID="btnAddFav" Text="加入我的影片"></asp:LinkButton>
+                        <asp:LinkButton runat="server" ID="btnRemoveFav" Text="移除我的影片"></asp:LinkButton>
+                        </li>
+                        <li>
+                        <asp:LinkButton runat="server" ID="btnLikeEpisode" Text="Like"></asp:LinkButton>
+                        <asp:LinkButton runat="server" ID="btnUnlikeEpisode" Text="Unlike"></asp:LinkButton>
+                        </li>
+                        </ul>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </asp:Panel>
+
+            <a id="btn-dim-screen" style="z-index:1000; display:none;">Dim Screen</a>
+        </div>
+        <div class="clear"></div>
+        <div id="tag" >
+            <asp:SqlDataSource runat="server" ID="dsTag" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                SelectCommand="SELECT [TagID], [Tag] FROM [view_ProductTag] WHERE (([Lang] = @Lang) AND ([Enabled] = @Enabled) AND ([ProductID] = @ProductID))">
+                <SelectParameters>
+                    <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+                    <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                    <asp:ControlParameter ControlID="hfdProductID" Name="ProductID" 
+                        PropertyName="Value" Type="Int32" />
+                </SelectParameters>
+            </asp:SqlDataSource>
+            <asp:ListView runat="server" ID="lvTag" DataSourceID="dsTag">
+                <LayoutTemplate>
+                    <asp:Label runat="server" Text="關鍵字" CssClass="item"></asp:Label>
+                    <ul class="tag-list item">
+                        <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+                    </ul>
+                </LayoutTemplate>
+                <ItemTemplate>
+                    <li>
+                        <asp:HyperLink runat="server" Text='<%# Eval("Tag") %>' NavigateUrl='<%# String.Format("~/videos.aspx?tag={0}", TagClass.EncryptID(Eval("TagID"))) %>'></asp:HyperLink>
+                    </li>
+                </ItemTemplate>
+            </asp:ListView>
+        </div>
+        <br />
+        <div>
+        <asp:UpdatePanel runat="server" ID="UpdatePanel1">
+            <ContentTemplate>
+
+        <asp:TabContainer ID="TabContainer1" runat="server" >
+            <asp:TabPanel runat="server" ID="tabComment" HeaderText="評論">
+                <ContentTemplate>
+<%---------- Comment  -------------%>
+<asp:UpdatePanel runat="server" ID="CommentUpdatePanel" UpdateMode="Conditional" ChildrenAsTriggers="true">
+    <ContentTemplate>
+
+        <asp:HiddenField runat="server" ID="hfdReferenceID" />
+        <asp:HiddenField runat="server" ID="hfdType" />
+        <div id="comment-post">
+        <asp:Panel runat="server" ID="pnlPost" DefaultButton="btnPost">
+            <asp:TextBox runat="server" ID="txtComment" Rows="3" Width="95%" TextMode="MultiLine" CssClass="watermark" MaxLength="1024"></asp:TextBox>
+            <asp:Panel runat="server" ID="pnlCommentControl">
+                <asp:LinkButton runat="server" ID="btnAddImage" Text="加入圖片" CausesValidation="false"></asp:LinkButton>
+                <asp:LinkButton runat="server" ID="btnAddVideo" Text="加入影片" CausesValidation="false" OnClientClick="preview();"></asp:LinkButton>
+            </asp:Panel>
+            <asp:Panel runat="server" ID="pnlImageUpload" CssClass="additional" Visible="false">
+                <div style="float:left;">
+                <asp:AsyncFileUpload ID="AsyncFileUpload1" runat="server"  OnClientUploadError="uploadError" OnClientUploadStarted="StartUpload" OnClientUploadComplete="UploadComplete" 
+                    OnUploadedComplete="AsyncFileUpload1_UploadedComplete" ClientIDMode="AutoID"  ThrobberID="Throbber" UploaderStyle="Traditional"/>
+                </div>
+                <asp:Label ID="Throbber" runat="server" Style="display: none; float:left;">
+                    <asp:Image ID="Image1" runat="server" ImageUrl="~/images/wait.gif" />
+                    <asp:Label runat="server" ID="lblImageMessage"></asp:Label>
+                </asp:Label>
+                <div style="clear:both;">
+                <asp:Label runat="server" ID="lblImageUrl"></asp:Label>
+                <asp:Image runat="server" ID="Image2" style="display:none;"/>
+                </div>
+            </asp:Panel>
+            <asp:Panel runat="server" ID="pnlVideoUrl" CssClass="additional" DefaultButton="btnPreviewVideo" Visible="false">
+                YouTube Url: <asp:TextBox runat="server" ID="txtVideoUrl" Columns="50" CssClass="video-url"></asp:TextBox>
+                <asp:Button runat="server" ID="btnPreviewVideo" Text="預覽" OnClientClick="preview();" UseSubmitBehavior="false" />
+                <asp:TextBoxWatermarkExtender ID="txtVideoUrl_TextBoxWatermarkExtender" WatermarkCssClass="text watermark" 
+                    WatermarkText="將YouTube連結覆制並貼上" runat="server" TargetControlID="txtVideoUrl">
+                </asp:TextBoxWatermarkExtender>
+                <div id="yt-error" class="error" style="display:none;">YouTube網址不正確</div>
+                <div id="video-preview-panel" style="display:none;">
+                    <div class="image-wrapper"><img class="thumbnail" /></div>
+                    <asp:Label runat="server" ID="lblTitle" CssClass="title" EnableViewState="true"></asp:Label><br />
+                    <asp:Label runat="server" ID="lblDesc" CssClass="desc" EnableViewState="true"></asp:Label>
+                </div>
+            </asp:Panel>
+            <div class="clear"></div>
+            <asp:Button runat="server" ID="btnPost" Text="發表" />
+        </asp:Panel>
+        <asp:Panel runat="server" ID="pnlRegister">
+            你也想發表評論? 立即<asp:HyperLink ID="HyperLink1" runat="server" NavigateUrl="~/register.aspx">登記</asp:HyperLink>或<asp:LinkButton runat="server" ID="btnLogin">登入</asp:LinkButton></asp:Panel>
+        </div>
+        
+        <div id="comment-list">
+            
+            <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                
+                SelectCommand="SELECT CommentID, UserID, Name, CommentDate, CommentDescription, MediaUrl, MediaTitle, MediaDesc, LikeCount FROM view_Comment WHERE (CommentType = @CommentType) AND (ReferenceID = @ReferenceID) AND (IsDisable = @IsDisable) AND (IsInspected = @IsInspected) And ParentID = @ParentID ORDER BY CommentDate DESC"
+                DeleteCommand="DELETE FROM Comment WHERE CommentID = @CommentID">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="hfdType" Name="CommentType" 
+                        PropertyName="Value" Type="String" />
+                    <asp:ControlParameter ControlID="hfdReferenceID" Name="ReferenceID" 
+                        PropertyName="Value" Type="Int32" />
+                    <asp:Parameter DefaultValue="false" Name="IsDisable" Type="Boolean" />
+                    <asp:Parameter DefaultValue="false" Name="IsInspected" />
+                    <asp:Parameter DefaultValue="0" Name="ParentID" />
+                </SelectParameters>
+                <DeleteParameters>
+                    <asp:Parameter Name="CommentID" />
+                </DeleteParameters>
+            </asp:SqlDataSource>
+            
+            <asp:ListView runat="server" ID="lvwComment" DataSourceID="SqlDataSource1" DataKeyNames="CommentID">
+                <LayoutTemplate>
+                    <asp:PlaceHolder runat='server' ID="itemPlaceHolder"></asp:PlaceHolder>
+                    <asp:DataPager runat="server" PageSize="20">
+                        <Fields>
+                            <asp:NextPreviousPagerField ButtonType="Link" PreviousPageText="上一頁" ShowNextPageButton="false" />
+                            <asp:NumericPagerField ButtonType="Link" ButtonCount="5" />
+                            <asp:NextPreviousPagerField ButtonType="Link" NextPageText="下一頁" ShowPreviousPageButton="false" />
+                        </Fields>
+                    </asp:DataPager>
+                </LayoutTemplate>
+                <ItemTemplate>
+                    <asp:PlaceHolder runat="server" ID="itemPlaceHolder">
+                    <div class="comment-item">
+                        <asp:Label ID="Label1" runat="server" Text='<%# Eval("Name") %>' CssClass="user"></asp:Label>
+                        <asp:Label ID="Label2" runat="server" Text='<%# Eval("CommentDescription") %>' CssClass="comment"></asp:Label>
+                        <asp:Panel ID="Panel1" runat="server" CssClass="additional" Visible='<%# IsVideo(Eval("MediaUrl")) %>'>
+                            <div class="image-wrapper"><asp:HyperLink runat="server" ID="Img1" CssClass="thumbnail" ImageUrl='<%# ShowThumbnail(Eval("MediaUrl")) %>' onclick='<%# "TINY.box.show({iframe:""" & GetEmbedVideoUrl(Eval("MediaUrl")) & """,width:640,height:360})" %>' /></div>
+                            <asp:Label ID="Label3" runat="server" CssClass="title" Text='<%# Eval("MediaTitle") %>'></asp:Label>
+                            <asp:Label ID="Label4" runat="server" CssClass="desc" Text='<%# Eval("MediaDesc") %>'></asp:Label>
+                        </asp:Panel>
+                        <asp:Panel ID="Panel2" runat="server" CssClass="additional" Visible='<%# IsImage(Eval("MediaUrl")) %>'>
+                            <asp:HyperLink ID="HyperLink3" runat="server" CssClass="image-preview" ImageUrl='<%# GetImageUrl(Eval("MediaUrl"), ImageClass.ImageSize.Thumbnail) %>' onclick='<%# "TINY.box.show({image:""" & Page.ResolveClientUrl(GetImageUrl(Eval("MediaUrl"), ImageClass.ImageSize.Normal)) & """})" %>'></asp:HyperLink>
+                        </asp:Panel>
+                        
+                        <br />
+                        <div>
+                        <asp:Label ID="Label6" runat="server" Text='<%# Utility.GetTime(Eval("CommentDate")) %>' CssClass="date"></asp:Label>
+                        <asp:SqlDataSource runat="server" ID="SqlDataSource2"
+                            ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                            SelectCommand="SELECT LikeCount FROM view_LikeTableCountByUser WHERE LikeType = @LikeType AND ReferenceID = @ReferenceID AND UserID = @UserID"
+                            DeleteCommand="DELETE FROM LikeTable WHERE LikeType = @LikeType AND ReferenceID = @ReferenceID AND UserID = @UserID">
+                            <SelectParameters>
+                                <asp:Parameter DefaultValue="comment" Name="LikeType" Type="String" />
+                                <asp:Parameter DefaultValue="false" Name="IsInspected" />
+                                <asp:ControlParameter Name="ReferenceID" Type="Int32" ControlID="hfdCommentID" PropertyName="Value" />
+                            </SelectParameters>
+                            <DeleteParameters>
+                                <asp:Parameter Name="CommentID" />
+                            </DeleteParameters>
+                        </asp:SqlDataSource>
+
+                        · <span id='<%# String.Format("like-{0}", Eval("CommentID")) %>' class="date"><%# String.Format("{0}個Like", Eval("LikeCount")) %></span>
+                        <asp:PlaceHolder runat="server" Visible='<%# Page.User.Identity.IsAuthenticated %>'>
+                            · <asp:HyperLink runat="server" Text="Like" data-id='<%# Eval("CommentID") %>' CssClass="comment-like-button date" Visible='<%# ShowLikeButton(Eval("CommentID")) %>'></asp:HyperLink>
+                            <asp:HyperLink runat="server" Text="Unlike" data-id='<%# Eval("CommentID") %>' CssClass="comment-unlike-button date" Visible='<%# Not ShowLikeButton(Eval("CommentID")) %>'></asp:HyperLink>
+                        </asp:PlaceHolder>
+
+                        <asp:LinkButton runat="server" Text="檢舉" ID="btnInspect" CssClass="button" OnClick="btnInspect_Click" CausesValidation="false" Visible='<%# Page.User.Identity.IsAuthenticated And Not IsCurrentUser(Eval("UserID")) %>'></asp:LinkButton>
+                        <asp:LinkButton runat="server" Text="刪除" ID="btnDelete" CssClass="button" CommandName="delete" CommandArgument='<%# Eval("CommentID") %>' Visible='<%# IsCurrentUser(Eval("UserID")) %>' ></asp:LinkButton>
+                        <asp:ConfirmButtonExtender ID="ConfirmButtonExtender1" runat="server" TargetControlID="btnDelete" ConfirmText="確定刪除?" />
+                        </div>
+                        
+                        <asp:HiddenField runat="server" ID="hfdCommentID" Value='<%# Eval("CommentID") %>' />
+
+                        <asp:SqlDataSource runat="server" ID="dsReply"
+                            ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                            
+                            SelectCommand="SELECT CommentID, UserID, CommentDate, CommentDescription, Name, LikeCount FROM view_Comment WHERE (IsDisable = @IsDisable) AND (IsInspected = @IsInspected) And ParentID = @ParentID ORDER BY CommentDate ASC"
+                            DeleteCommand="DELETE FROM Comment WHERE CommentID = @CommentID">
+                            <SelectParameters>
+                                <asp:Parameter DefaultValue="false" Name="IsDisable" Type="Boolean" />
+                                <asp:Parameter DefaultValue="false" Name="IsInspected" />
+                                <asp:ControlParameter Name="ParentID" Type="Int32" ControlID="hfdCommentID" PropertyName="Value" />
+                            </SelectParameters>
+                            <DeleteParameters>
+                                <asp:Parameter Name="CommentID" />
+                            </DeleteParameters>
+                        </asp:SqlDataSource>
+                        
+                        <ul id="Ul1" runat="server" class="reply" data-id='<%# Eval("CommentID") %>'>
+                            <%--<li class="first"></li>--%>
+                        <asp:Repeater runat="server" ID="Repeater1" DataSourceID="dsReply">
+                            <ItemTemplate>
+                                <li>
+                                    <asp:Label ID="Label7" runat="server" Text='<%# Eval("Name") %>' CssClass="user"></asp:Label>
+                                    <asp:Label ID="Label8" runat="server" Text='<%# Eval("CommentDescription") %>' CssClass="desc"></asp:Label>
+                                    <div>
+                                        <asp:Label ID="Label9" runat="server" Text='<%# Utility.GetTime(Eval("CommentDate")) %>' CssClass="date"></asp:Label>
+                                        · <span id='<%# String.Format("like-{0}", Eval("CommentID")) %>' class="date"><%# String.Format("{0}個Like", Eval("LikeCount")) %></span>
+                                        <asp:PlaceHolder ID="PlaceHolder1" runat="server" Visible='<%# Page.User.Identity.IsAuthenticated %>'>
+                                            · <asp:HyperLink ID="HyperLink4" runat="server" Text="Like" data-id='<%# Eval("CommentID") %>' CssClass="comment-like-button date" Visible='<%# ShowLikeButton(Eval("CommentID")) %>'></asp:HyperLink>
+                                            <asp:HyperLink ID="HyperLink5" runat="server" Text="Unlike" data-id='<%# Eval("CommentID") %>' CssClass="comment-unlike-button date" Visible='<%# Not ShowLikeButton(Eval("CommentID")) %>'></asp:HyperLink>
+                                        </asp:PlaceHolder>
+                                    </div>
+                                </li>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                        <asp:PlaceHolder runat="server" Visible='<%# Page.User.Identity.IsAuthenticated %>'>
+                            <li>
+                                <textarea class="watermark"><%=ReplyWatermarkText%></textarea>
+                                <input type="button" value="發表" />
+                            </li>
+                        </asp:PlaceHolder>
+                        </ul>
+                    </div>
+                    </asp:PlaceHolder>
+                </ItemTemplate>
+            </asp:ListView>
+        </div>
+    
+    </ContentTemplate>
+</asp:UpdatePanel>
+<asp:UpdateProgress runat="server" ID="UpdateProgress1" AssociatedUpdatePanelID="CommentUpdatePanel" >
+    <ProgressTemplate>
+        <div></div>
+    </ProgressTemplate>
+</asp:UpdateProgress>
+<cc1:UpdateProgressOverlayExtender ID="UpdateProgressOverlayExtender1" CssClass="updateProgress" ControlToOverlayID="CommentUpdatePanel" OverlayType="Control" TargetControlID="UpdateProgress1" 
+            runat="server" />
+            
+<script type="text/javascript">
+    function uploadError(sender, args) {
+        $("#<%= lblImageMessage.ClientID %>").html(args.get_fileName() + "<span style='color:red;'>" + args.get_errorMessage() + "</span>");
+    }
+
+    function StartUpload(sender, args) {
+        $("#<%= lblImageMessage.ClientID %>").text("上傳中...");
+    }
+
+    function UploadComplete(sender, args) {
+
+        /*
+        var filename = args.get_fileName();
+        var contentType = args.get_contentType();
+        var text = filename + " (" + args.get_length() + " bytes) 已成功上傳";
+        */
+        $("#<%= lblImageMessage.ClientID %>").text('');
+        //$("#<%= Image1.ClientID %>").attr("src",
+    }
+
+    function imagePreview(e, url) {
+        $(e).load(function() {
+            $(this).fadeIn();
+        }).attr("src", url);
+    };
+
+</script>                
+<%---------- End of Comment  -------------%>
+
+                </ContentTemplate>
+            </asp:TabPanel>
+            <asp:TabPanel runat="server" ID="tabFacebook" HeaderText="Facebook">
+                <ContentTemplate>
+                <div id="fb-comment"></div>
+                </ContentTemplate>
+            </asp:TabPanel>
+        </asp:TabContainer>
+
+            </ContentTemplate>
+        </asp:UpdatePanel>
+
+        </div>
+        <div id="content-left-left">
+            <br />
+
+    
+        </div>
+        <div id="content-left-right">
+
+        </div>
+    
+    </asp:PlaceHolder>
+
+    
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder2" Runat="Server">
+    <asp:PlaceHolder runat="server" ID="phdInfo2">
+        <asp:Panel runat="server" ID="pnlInfo" CssClass="info-panel">
+            <div class="section-title">有關資訊</div>
+
+            <div class="content">
+            <asp:Literal runat="server" ID="ltrInfo"></asp:Literal>
+            </div>
+
+            <asp:Panel runat="server" ID="pnlInfoControl" CssClass="control-panel">
+                <asp:UpdatePanel runat="server" ID="UpdatePanel2" UpdateMode="Conditional">
+                    <ContentTemplate>
+                        <asp:DropDownList runat="server" ID="ddlCollectionGroup" DataTextField="GroupName" DataValueField="GroupID"></asp:DropDownList>
+                        <asp:LinkButton runat="server" ID="btnAddCollection" Text="加入我的資訊"></asp:LinkButton>
+                        <asp:LinkButton runat="server" ID="btnRemoveCollection" Text="移除我的資訊"></asp:LinkButton>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
+            </asp:Panel>
+        </asp:Panel>
+    </asp:PlaceHolder>
+</asp:Content>
+
+
+<asp:Content ID="Content4" ContentPlaceHolderID="ContentPlaceHolder3" runat="server">
+    <asp:HiddenField runat="server" ID="hfdEpisodeID" />
+    <asp:HiddenField runat="server" ID="hfdProgramID" />
+    
+    <asp:SqlDataSource runat="server" ID="dsRelatedVideo" 
+        ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                
+        SelectCommand="SELECT Top 5 [ProductID], [ProductName], [Description], [MOQUnit] FROM [view_ProductImageCount] WHERE (([FunctionID] = @FunctionID) AND ([Enabled] = @Enabled)) AND CategoryID = @CategoryID AND ProductID <> @ProductID AND GETDATE() >= SellingStartDate ORDER BY ViewCount">
+        <SelectParameters>
+            <asp:ControlParameter ControlID="hfdVideoFunctionID" Name="FunctionID" PropertyName="Value" Type="Int32" />
+            <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+            <asp:ControlParameter ControlID="hfdProgramID" Name="CategoryID" PropertyName="Value" Type="Int32" />
+            <asp:ControlParameter ControlID="hfdEpisodeID" Name="ProductID" PropertyName="Value" Type="Int32" />
+        </SelectParameters>
+    </asp:SqlDataSource>
+
+    <div class="section-title">有關影片</div>
+
+    <asp:ListView runat="server" ID="ListView1" DataSourceID="dsRelatedVideo">
+        <LayoutTemplate>
+            <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+        </LayoutTemplate>
+        <ItemTemplate>
+            <div class="related-video">
+                <table border="0" width="100%">
+                    <tr>
+                    <td>
+                <asp:HyperLink ID="Image1" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>'
+                    ImageUrl='<%# VideoClass.GetPreview(Eval("MOQUnit")) %>' CssClass="tb" />
+                <%--<asp:Image ID="Image1" runat="server" ImageUrl='<%# IO.Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), String.Format("{0}.jpg", Eval("ProductID"))) %>' />--%>
+                    </td>
+                    <td valign="top">
+                    <asp:HyperLink ID="HyperLink5"  runat="server" CssClass="title" Text='<%# Eval("ProductName") %>' NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>'></asp:HyperLink>
+                <p class="desc"><asp:Label ID="Label5" runat="server" Text='<%# Utility.TrimHTML(Eval("Description"), 100) %>'></asp:Label></p>
+                <asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>' >Watch</asp:HyperLink>
+                <%--<asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>' CssClass="more" ImageUrl="~/images/more_blue.png"></asp:HyperLink>--%>
+                    </td>
+                    </tr>
+                </table>
+            </div>
+        </ItemTemplate>
+    </asp:ListView>
+
+</asp:Content>

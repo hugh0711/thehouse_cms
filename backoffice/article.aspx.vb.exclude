@@ -1,0 +1,244 @@
+﻿
+Partial Class backoffice_article
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+
+        Dim Lang() As String = Split(ConfigurationManager.AppSettings("LanguageSupport"), ",")
+        ddlLang.DataSource = Lang
+        ddlLang.DataBind()
+
+    End Sub
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+
+
+        If Not Page.IsPostBack Then
+
+            Dim _FileBrowser As CKFinder.FileBrowser = New CKFinder.FileBrowser()
+            _FileBrowser.BasePath = ResolveClientUrl("~/ckfinder") & "/" '"/ckfinder/"
+            _FileBrowser.SetupFCKeditor(FCKeditor1)
+            Dim _FileBrowser2 As CKFinder.FileBrowser = New CKFinder.FileBrowser()
+            _FileBrowser2.BasePath = ResolveClientUrl("~/ckfinder") & "/" '"/ckfinder/"
+            _FileBrowser2.SetupFCKeditor(FCKeditor2)
+
+            Dim ArrStyle() As String = New String() {"css/StyleSheet2.css", "css/StyleSheet.css"}
+            FCKeditor1.EditorAreaCSS = "css/EditStyleSheet.css"
+            FCKeditor2.EditorAreaCSS = "css/EditStyleSheet.css"
+
+            'If Request("fn") IsNot Nothing OrElse Request("id").Trim <> "" Then
+            '    ViewState("fn") = CInt(Request("fn"))
+            'Else
+            '    ViewState("fn") = 1
+            'End If
+            'ViewState("FunctionSettings") = New SiteFunctionClass(ViewState("fn"))
+            If Request("parentid") IsNot Nothing Then
+                ViewState("ParentID") = CInt(Request("parentid"))
+                btnDelete.Visible = False
+                'If ViewState("FunctionSettings").hasCategoryImage Then
+                '    btnSave.Text = "下一步"
+                'End If
+            ElseIf Request("id") IsNot Nothing Then
+                ViewState("PageID") = CInt(Request("id"))
+                btnDelete.Visible = True
+                LoadData()
+            Else
+                Response.Redirect("~/backoffice/pages.aspx")
+            End If
+            ViewState("Page") = ""
+            EditMode(1)
+        End If
+    End Sub
+
+    'Protected Sub btnUpload_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload.Click
+    '    Response.Redirect(String.Format("~/backoffice/category_upload.aspx?id={0}", ViewState("CategoryID"), ViewState("fn")))
+    'End Sub
+
+
+    Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSave.Click
+        Try
+            Dim IsNew As Boolean = ViewState("PageID") Is Nothing
+            SaveData()
+            'If IsNew And ViewState("FunctionSettings").HasCategoryImage Then
+            '    Response.Redirect(String.Format("~/backoffice/category_upload.aspx?id={0}", ViewState("CategoryID"), ViewState("fn")))
+            'Else
+            '    Response.Redirect(String.Format("~/backoffice/categories.aspx?category={0}&fn={1}", ViewState("ParentID"), ViewState("fn")))
+            'End If
+            lblMessage.Text = "網頁資料已儲存"
+        Catch ex As Exception
+            lblMessage.Text = "網頁資料儲存時發生問題: " & ex.Message
+        End Try
+    End Sub
+
+    Protected Sub btnSaveClose_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSaveClose.Click
+        Try
+            Dim IsNew As Boolean = ViewState("PageID") Is Nothing
+            SaveData()
+            Response.Redirect(String.Format("~/backoffice/pages.aspx?page={0}", ViewState("ParentID")))
+        Catch ex As Exception
+            lblMessage.Text = "網頁資料儲存時發生問題: " & ex.Message
+        End Try
+    End Sub
+
+    Protected Sub btnClose_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnClose.Click
+        Response.Redirect(String.Format("~/backoffice/pages.aspx?page={0}", ViewState("ParentID")))
+    End Sub
+
+    Protected Sub LoadData()
+        Dim PageAdapter As New PageDataSetTableAdapters.PageTableAdapter()
+        Dim PageTable As PageDataSet.PageDataTable
+        Dim PageRow As PageDataSet.PageRow
+
+        PageTable = PageAdapter.GetDataByID(ViewState("PageID"))
+        If PageTable.Rows.Count > 0 Then
+            PageRow = PageTable.Rows(0)
+            With PageRow
+                'txtPage.Text = .Page
+                txtUrl.Text = .url
+                txtRedirect.Text = .Page
+                'txtTitle.Text = .Title
+                'txtKeywords.Text = .Keyword
+                'txtDescription.Text = .Description
+                ddlMasterPage.SelectedValue = .MasterPage
+                'FCKeditor1.Value = .Content
+                ViewState("Page") = .Page
+                chkEnabled.Checked = .Enabled
+                ViewState("ParentID") = .ParentPageID
+            End With
+            'btnLanguage.Visible = (ConfigurationManager.AppSettings("LanguageSupport").LastIndexOf(","c) <> -1)
+            btnEditLang.Enabled = True
+        Else
+            btnEditLang.Enabled = False
+        End If
+    End Sub
+
+    Protected Sub LoadLangData()
+        Dim PageAdapter As New PageDataSetTableAdapters.PageLangTableAdapter()
+        Dim PageTable As PageDataSet.PageLangDataTable
+        Dim PageRow As PageDataSet.PageLangRow
+
+        PageTable = PageAdapter.GetDataByPageIDLang(ViewState("PageID"), ddlLang.SelectedValue)
+        If PageTable.Rows.Count > 0 Then
+            PageRow = PageTable.Rows(0)
+            With PageRow
+                txtPage.Text = .Page
+                txtTitle.Text = .Title
+                txtKeywords.Text = .Keyword
+                txtDescription.Text = .Description
+                FCKeditor1.Value = .Content
+                FCKeditor2.Value = .Content2
+                txtBannerUrl.Text = .BannerImageUrl
+                txtTitleUrl.Text = .TitleImageUrl
+                chkLangEnabled.Checked = .Enabled
+            End With
+            'btnLanguage.Visible = (ConfigurationManager.AppSettings("LanguageSupport").LastIndexOf(","c) <> -1)
+        Else
+            txtPage.Text = ""
+            txtTitle.Text = ""
+            txtKeywords.Text = ""
+            txtDescription.Text = ""
+            FCKeditor1.Value = ""
+            FCKeditor2.Value = ""
+            txtBannerUrl.Text = ""
+            txtTitleUrl.Text = ""
+        End If
+    End Sub
+
+    Protected Sub SaveData()
+        Dim PageAdapter As New PageDataSetTableAdapters.PageTableAdapter()
+        'Dim PageLangAdapter As New PageDataSetTableAdapters.PageLangTableAdapter()
+        Dim SortOrder As Integer = PageAdapter.GetNextSortOrder(CInt(ViewState("ParentID"))).GetValueOrDefault(1)
+        'Dim ImageFilename As String = IO.Path.GetFileName(imgPage.ImageUrl)
+
+        If ViewState("PageID") Is Nothing Then
+            ViewState("PageID") = PageAdapter.InsertQuery(0, txtRedirect.Text, txtUrl.Text, "", "", "", ViewState("ParentID"), ddlMasterPage.SelectedValue, "", chkEnabled.Checked, Page.User.Identity.Name, SortOrder)
+            '    ' Create PageName to other languages
+            '    SavePageName()
+        Else
+            PageAdapter.UpdateQuery(0, txtUrl.Text, "", "", "", ViewState("ParentID"), ddlMasterPage.SelectedValue, "", chkEnabled.Checked, Page.User.Identity.Name, txtRedirect.Text, ViewState("PageID"))
+            '    If ViewState("Page") <> txtPage.Text Then
+            '        SavePageName()
+            '    End If
+        End If
+        btnEditLang.Enabled = True
+    End Sub
+
+    Protected Sub SaveLangData()
+        Dim PageLangAdapter As New PageDataSetTableAdapters.PageLangTableAdapter()
+        Dim RecAffected As Integer
+        txtTitle.Text = txtPage.Text
+
+        RecAffected = PageLangAdapter.UpdateQuery(txtTitle.Text, txtKeywords.Text, txtDescription.Text, FCKeditor1.Value, FCKeditor2.Value, txtPage.Text, chkLangEnabled.Checked, txtTitleUrl.Text, txtBannerUrl.Text, ViewState("PageID"), ddlLang.SelectedValue)
+        If RecAffected = 0 Then
+            PageLangAdapter.Insert(ViewState("PageID"), ddlLang.SelectedValue, txtTitle.Text, txtKeywords.Text, txtDescription.Text, FCKeditor1.Value, txtPage.Text, chkLangEnabled.Checked, FCKeditor2.Value, txtTitleUrl.Text, txtBannerUrl.Text)
+        End If
+    End Sub
+
+    Protected Sub btnDelete_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDelete.Click
+        Dim PageAdapter As New PageDataSetTableAdapters.PageTableAdapter()
+        Dim PageLangAdapter As New PageDataSetTableAdapters.PageLangTableAdapter()
+
+        PageAdapter.Delete(ViewState("PageID"))
+        PageLangAdapter.DeleteByPageID(ViewState("PageID"))
+        Response.Redirect(String.Format("~/backoffice/pages.aspx?id={0}", ViewState("ParentID")))
+    End Sub
+
+    'Protected Sub btnLanguage_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLanguage.Click
+    '    Response.Redirect("~/backoffice/category_name.aspx?id=" & ViewState("CategoryID"))
+    'End Sub
+
+    'Protected Sub SaveCategoryName()
+    '    ' Create CategoryName to other languages
+    '    Dim CategoryNameAdapter As New CategoryDataSetTableAdapters.CategoryNameTableAdapter()
+    '    Dim LanguageSupport() As String = ConfigurationManager.AppSettings("LanguageSupport").ToString().Split(",")
+    '    Dim DefaultLanguage As String = ConfigurationManager.AppSettings("DefaultLanguage")
+    '    Dim CategoryName As String
+    '    Dim Translate As New GoogleTranslateClass
+    '    For Each ToLang In LanguageSupport
+    '        CategoryName = Translate.Translate(txtPage.Text, DefaultLanguage, ToLang)
+    '        If CategoryNameAdapter.UpdateQuery(CategoryName, ViewState("CategoryID"), ToLang) = 0 Then
+    '            CategoryNameAdapter.Insert(ViewState("CategoryID"), ToLang, CategoryName)
+    '        End If
+    '    Next
+    'End Sub
+
+
+
+
+    Protected Sub EditMode(ByVal index As Integer)
+        Select Case index
+            Case 1
+                pnlUrl.Enabled = True
+                pnlButton.Enabled = True
+                pnlDetails.Visible = False
+            Case 2
+                pnlUrl.Enabled = False
+                pnlButton.Enabled = False
+                pnlDetails.Visible = True
+        End Select
+
+        lblMessage.Text = ""
+    End Sub
+
+
+    Protected Sub btnEditLang_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnEditLang.Click
+        LoadLangData()
+        EditMode(2)
+    End Sub
+
+    Protected Sub btnSaveLang_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSaveLang.Click
+        Try
+            SaveLangData()
+            EditMode(1)
+            lblMessage.Text = "網頁內容已儲存"
+        Catch ex As Exception
+            lblMessage.Text = "網頁內容儲存時發生問題: " & ex.Message
+        End Try
+    End Sub
+
+    Protected Sub btnCancelLang_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCancelLang.Click
+        EditMode(1)
+    End Sub
+
+
+End Class

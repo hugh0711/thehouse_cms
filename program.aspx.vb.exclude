@@ -1,0 +1,32 @@
+﻿
+Partial Class program
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Request("id") IsNot Nothing Then
+                ViewState("id") = CInt(Request("id"))
+                LoadData()
+            End If
+        End If
+    End Sub
+
+    Protected Sub LoadData()
+        Dim CategoryAdapter As New CategoryDataSetTableAdapters.view_CategoryTableAdapter()
+        Dim dt As CategoryDataSet.view_CategoryDataTable
+        Dim dr As CategoryDataSet.view_CategoryRow
+        Dim ID As Integer = ViewState("id")
+
+        hfdProgramID.Value = ID
+        dt = CategoryAdapter.GetDataByCategoryID(ID, Session("MyCulture"))
+        If dt.Rows.Count > 0 Then
+            dr = dt.Rows(0)
+            txtProgram.Text = dr.CategoryName
+            lblDesc.Text = dr.Description
+        End If
+
+        Dim ParentID As Integer = CategoryAdapter.GetParentID(ID)
+        lnkChannel.Text = CategoryAdapter.GetCategoryName(ParentID, Session("MyCulture"))
+        lnkChannel.NavigateUrl = String.Format("~/channel.aspx?id={0}", ParentID)
+    End Sub
+End Class

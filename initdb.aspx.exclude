@@ -1,0 +1,16 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MainMasterPage.master" AutoEventWireup="false" CodeFile="initdb.aspx.vb" Inherits="initdb" enableViewStateMac="false"  %>
+
+
+<asp:Content ID="Content2" ContentPlaceHolderID="MainContentPlaceHolder" Runat="Server">
+    <h2>Initial DB</h2>
+    <p>
+        <asp:Button ID="btnStart" runat="server" Text="Start" />
+    </p>
+    <p>
+        <asp:Button ID="btnAddManager" runat="server" Text="Add Manager" />
+    </p>
+    <p>
+        <asp:Label ID="lblMessage" runat="server"></asp:Label>
+    </p>
+</asp:Content>
+

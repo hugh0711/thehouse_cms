@@ -1,0 +1,270 @@
+﻿<%@ Master Language="VB" CodeFile="MainMasterPage.master.vb" Inherits="master_MainMasterPage" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head runat="server">
+
+
+    <title>This Is Love</title>
+     <%-- Fancy box--%>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="../js/fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="js/fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    
+    <script type="text/javascript" src="js/fancybox/jquery.mousewheel-3.0.6.pack.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $(".various").fancybox({
+                maxWidth: 800,
+                maxHeight: 1000,
+                fitToView: false,
+                width: '100%',
+                height: '100%',
+                autoSize: 'yes',
+                closeClick: false,
+                openEffect: 'none',
+                closeEffect: 'none',
+                centerOnScroll: true,
+            });
+
+            $(".fancybox").fancybox({
+                centerOnScroll:true,
+                helpers: {
+                    overlay: {
+                        locked: true // if true, the content will be locked into overlay
+                    }
+                }
+            });
+        });
+
+
+        $(".fancybox").fancybox({
+            openEffect: 'none',
+            closeEffect: 'none',
+            iframe: {
+                width:1000,
+                Height:1000,
+                scrolling: 'auto',
+                preload: false
+
+            }
+        });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+    <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <meta name="description" content="Fullscreen Slit Slider with CSS3 and jQuery" />
+
+        <!--<link rel="shortcut icon" href="../favicon.ico">--> 
+		<link rel="stylesheet" type="text/css" href="../css/demo.css" />
+        <link rel="stylesheet" type="text/css" href="../css/style.css" />
+        <link rel="stylesheet" type="text/css" href="../css/custom.css" />
+		<link rel="stylesheet" type="text/css" href="../css/component.css" />
+        
+        <!--nav-->
+        <link rel="stylesheet" href="../css/base.css">
+		<link rel="stylesheet" href="../css/layout.css">
+        <!--nav-->
+        
+		<script src="js/modernizr.custom.js"></script>
+		<script type="text/javascript" src="js/modernizr.custom.79639.js"></script>
+		<noscript>
+			<link rel="stylesheet" type="text/css" href="../css/styleNoJS.css" />
+		</noscript>
+
+
+
+
+  
+     
+
+</head>
+<body id="div_mainPage">
+    
+
+    <form id="form1" runat="server">
+         <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" CombineScripts="True" EnablePageMethods="true">
+        </asp:ToolkitScriptManager>	
+
+
+
+   <header class="mobile">
+
+      <div class="row">
+
+         <div class="col full">
+
+            <div class="logo">
+               <a href="#"><%--<img alt="" src="images/logo.png">--%>Just Love</a>
+            </div>
+
+            <nav id="nav-wrap">
+
+               <a class="mobile-btn" href="#nav-wrap" title="Show navigation">Show navigation</a>
+	            <a class="mobile-btn" href="#" title="Hide navigation">Hide navigation</a>
+
+               <ul id="nav" class="nav">
+	               <li><a href="Default.aspx#intro">Home</a></li>
+	               <li><a href="Default.aspx#services">Services</a></li>
+	               <li><a href="Default.aspx#portfolio">Portfolio</a></li>
+	               <li><a href="Default.aspx#journal">Journal</a></li>
+                  <li><a href="Default.aspx#about">About Us</a></li>
+
+
+                  <%--<li><a href="login.aspx">Login</a></li>--%>
+
+                   <asp:LoginView ID="LoginView1" runat="server">
+                            <AnonymousTemplate>
+
+
+
+
+
+
+                              <li>  
+                                  <asp:HyperLink runat="server" id="A1_hlink" NavigateUrl="~/login.aspx"
+                                >Login</asp:HyperLink>
+                              </li>
+
+                                </AnonymousTemplate>
+                            <LoggedInTemplate>
+
+                                <li><asp:LinkButton runat="server" ID="logout_hlink"  CausesValidation="false" meta:resourcekey="logout_hlinkResource1"  onclick="btnLogout_Click">Logout</asp:LinkButton></li>
+       
+                                </LoggedInTemplate>
+                            <RoleGroups>
+                                <asp:RoleGroup Roles="Admin,HK_Admin,MA_Admin,CN_Admin">
+                                    <ContentTemplate>                                       
+                                <li><asp:LinkButton runat="server" ID="LinkButton2"  CausesValidation="false" meta:resourcekey="logout_hlinkResource1" onclick="btnLogout_Click">Logout</asp:LinkButton></li>
+                                        <li> <asp:HyperLink ID="admin_hlink" runat="server" meta:resourcekey="admin_hlinkResource1"  NavigateUrl="~/backoffice/admin.aspx">Admin</asp:HyperLink></li>
+                                    </ContentTemplate>                            
+                                </asp:RoleGroup>
+                            </RoleGroups>
+                        </asp:LoginView>
+
+               </ul>
+
+            </nav>
+
+         </div>
+
+      </div>
+
+   </header>
+       
+       
+       
+       
+       
+       
+       
+        
+    
+
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+	
+		<script type="text/javascript" src="js/jquery.ba-cond.min.js"></script>
+		<script type="text/javascript" src="js/jquery.slitslider.js"></script>
+		
+        
+        <script src="js/classie.js"></script>
+		<script src="js/cbpScroller.js"></script>
+		
+        
+        
+        
+        
+        
+        
+  
+        
+   
+ 
+    
+    
+    
+ 
+	
+		<script src="js/modernizr.custom.js"></script>
+    
+
+    
+    
+    
+    
+     
+    
+    
+    <asp:ContentPlaceHolder id="MainContentPlaceHolder" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    
+    
+    
+    
+    
+    <div id="headerwrap3">
+      
+        <h1 style="padding-top:10px; opacity:0.8;"><span>JUST LOVE</span><br/><br/>This is Love Charity Service Group</h1>
+        
+    </div>
+    
+    
+    
+    
+    
+    
+    
+        
+</form>
+
+
+        
+     
+   
+ 
+
+
+
+    
+
+
+
+</body>
+</html>

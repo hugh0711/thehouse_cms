@@ -1,0 +1,29 @@
+﻿Imports Facebook
+
+Partial Class facebook2
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            ParseData()
+        End If
+    End Sub
+
+    Protected Sub ParseData()
+        Dim Result As FacebookOAuthResult
+
+        If (FacebookOAuthResult.TryParse(Request.Url, Result)) Then
+
+            If Result.IsSuccess Then
+
+                lblToken.Text = Result.AccessToken
+
+            Else
+
+                lblToken.Text = Result.ErrorDescription & "<br />" & Result.ErrorReason
+
+            End If
+
+        End If
+    End Sub
+End Class

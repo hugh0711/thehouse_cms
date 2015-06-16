@@ -1,0 +1,60 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPage.master" AutoEventWireup="false" CodeFile="facebook1.aspx.vb" Inherits="facebook1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+
+    <script type="text/javascript" src="~/js/jquery-1.6.4.min.js"></script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+      <div id="fb-root"></div>
+      <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId      : '<%=ConfigurationManager.AppSettings("FacebookAppID") %>',
+            status     : true, 
+            cookie     : true,
+            xfbml      : true,
+            oauth      : true,
+          });
+          FB.getLoginStatus(function(response) {
+            console.log(response);
+            if ((response.status) && (response.status=='connected')) {
+                $("#login").text(JSON.stringify(response));
+            }
+            else {
+                $("#login").text(response.status);
+            }
+          });
+        };
+        (function(d){
+           var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+           js = d.createElement('script'); js.id = id; js.async = true;
+           js.src = "//connect.facebook.net/en_US/all.js";
+           d.getElementsByTagName('head')[0].appendChild(js);
+         }(document));
+         
+      </script>
+      <div class="fb-login-button" data-scope="email,user_birthday">Login with Facebook</div>
+
+    <asp:Button runat="server" ID="btnFBLogin" Text="Facebook Login" Enabled="false" />
+    <span id="login"></span>
+    
+    <asp:UpdatePanel runat="server" ID="UpdatePanel1">
+        <ContentTemplate>
+            
+            <asp:Button runat="server" ID="btnCheck" Text="Check Authentication" />
+            <asp:Label runat="server" ID="lblCheck" Text=""></asp:Label>
+            
+            <br />
+            <asp:button runat="server" ID="btnCount" text="Count" />
+            <asp:Label runat="server" ID="lblCount"></asp:Label>
+            <asp:Image runat="server" ID="imgCount" />
+            
+            <br />
+            <asp:Button runat="server" ID="btnLogout" Text="Logout" />
+            <asp:Label runat="server" ID="lblLogout"></asp:Label>
+        
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>
+

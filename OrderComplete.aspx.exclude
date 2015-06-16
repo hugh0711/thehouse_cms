@@ -1,0 +1,19 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Master/MasterPage.master" AutoEventWireup="false" CodeFile="OrderComplete.aspx.vb" Inherits="OrderComplete" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<center>
+    <br /><br />
+    <h3>
+		<asp:Localize ID="locOrderNo" runat="server" Text="訂單編號 :"></asp:Localize>
+    </h3>
+    <br /><br />
+    <asp:Label ID="txtOrderNumber" runat="server" Text=""></asp:Label>
+    <br /><br />
+    <asp:HyperLink ID="lnkBack" runat="server" Text="返回主頁" NavigateUrl="~/Default.htm"></asp:HyperLink>
+    <br /><br />
+</center>
+
+</asp:Content>
+

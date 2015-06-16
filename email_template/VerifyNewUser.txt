@@ -1,0 +1,10 @@
+﻿Dear <%UserName%>,<br /><br />
+
+Welcome to MajiTV. In order to provide better service and personalized experience for you. 
+We would like to confirm you email address. If you have registered in MajiTV, please confirm your registration by click the following link:
+<a href="<%VerificationUrl%>"><%VerificationUrl%></a><br /><br />
+
+If you cannot click on the link above, you can simply copy and paste the link to your browser.<br /><br />
+
+Best regards,<br />
+MajiTV

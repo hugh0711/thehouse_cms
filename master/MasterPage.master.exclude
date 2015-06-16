@@ -1,0 +1,280 @@
+﻿<%@ Master Language="VB" CodeFile="MasterPage.master.vb" Inherits="master_MasterPage" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <%--<link href="~/css/reset.css" rel="stylesheet" type="text/css" />--%>
+    <link href="~/css/fonts.css" rel="stylesheet" type="text/css" />
+    <link href="~/css/style.css" rel="stylesheet" type="text/css" />
+    <%--<link href="~/css/betterTooltip.css" rel="Stylesheet" type="text/css" />--%>
+	<%--<script type="text/javascript" src='<%=ResolveUrl("~/Scripts/jquery-1.7.1.min.js") %>'></script>--%>
+	<script type="text/javascript" src="Scripts/jquery-1.7.1.min.js"></script>
+
+    <title>MajiTV</title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+
+<%--    <script type="text/javascript">
+        var hidden = false;
+
+        $(document).ready(function() {
+            $(".menuwrapper > li").bind("mouseover", function() {
+                var obj = $("object");
+                if (obj.length > 0) {
+                    $(obj).fadeTo('fast', 0.1);
+                    hidden = true;
+                }
+            });
+        })
+    </script>--%>
+<script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-28893890-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function () {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+</script>
+</head>
+<body>
+    <%--<form id="form2" runat="server" >--%>
+    <form id="form1" runat="server" enctype="multipart/form-data" method="post">
+        <asp:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server" CombineScripts="True" EnablePageMethods="true">
+        </asp:ToolkitScriptManager>
+
+          
+        <div id="page-wrapper">
+            <div id="header">
+                <div id="header-inner">
+<%--                    <div id="header-icon">
+                        <asp:Hyperlink runat="server" ImageUrl="~/images/mini_logo.gif"></asp:Hyperlink>
+                    </div>
+                    <div id="header-icon-hr"></div>
+                    <div id="header-social">
+                        <asp:Image runat="server" ImageUrl="~/images/sns_icons.png" />
+                    </div>--%>
+                    <div id="header-logo">
+                        <asp:HyperLink runat="server" NavigateUrl="~/" ImageUrl="~/images/header_logo.png" />
+                    </div>
+
+                    <div id="header-top">
+                    <div id="header-social">
+                        <asp:HyperLink ID="HyperLink9" runat="server" NavigateUrl="http://www.facebook.com/MajiTV" ImageUrl="~/images/social_facebook.gif" ToolTip="Facebook"></asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink10" runat="server" NavigateUrl="http://www.twitter.com/majitv_hk" ImageUrl="~/images/social_twitter.gif" ToolTip="Twitter"></asp:HyperLink>
+                        <asp:HyperLink ID="HyperLink11" runat="server" NavigateUrl="http://www.weibo.com/majitvhk" ImageUrl="~/images/social_weibo.gif" ToolTip="微博"></asp:HyperLink>
+                    </div>
+                    <div id="header-login">
+
+                        <asp:UpdatePanel runat="server" ID="LoginUpdatePanel">
+                            <ContentTemplate>
+                            
+                        <asp:LoginView ID="LoginView1" runat="server">
+                            <AnonymousTemplate>
+                                <asp:HyperLink ID="HyperLink7" runat="server" Text="主頁" NavigateUrl="~/"></asp:HyperLink> |
+                                <asp:Label runat="server" ID="lblRegister">登記</asp:Label> |
+                                <asp:HoverMenuExtender ID="HoverMenuExtender1" runat="server" TargetControlID="lblRegister" PopupControlID="pnlRegister" PopupPosition="Bottom" />
+                                <asp:Panel runat="server" ID="pnlRegister" CssClass="popup-panel" style="display:none;">
+                                    <asp:HyperLink ID="HyperLink6" runat="server" Text="登記會員" NavigateUrl="~/register.aspx"></asp:HyperLink><br />
+                                    <asp:HyperLink ID="HyperLink2" runat="server" Text="以Facebook登記" NavigateUrl="~/registerFB.aspx"></asp:HyperLink>
+                                </asp:Panel>
+                                <asp:HyperLink ID="HyperLink3" runat="server" Text="登入" NavigateUrl="~/login.aspx"></asp:HyperLink>
+
+                            </AnonymousTemplate>
+                            <LoggedInTemplate>
+                                歡迎<asp:LoginName ID="LoginName1" runat="server" /> | 
+                                <asp:HyperLink ID="HyperLink7" runat="server" Text="主頁" NavigateUrl="~/"></asp:HyperLink> |
+                                <asp:HyperLink ID="HyperLink4" runat="server" Text="我的資料" NavigateUrl="~/member.aspx"></asp:HyperLink> |                         
+                                <asp:HyperLink ID="HyperLink3" runat="server" Text="我的影片" NavigateUrl="~/myvideo.aspx"></asp:HyperLink> |                         
+                                <asp:HyperLink ID="HyperLink2" runat="server" Text="我的資訊" NavigateUrl="~/mycollection.aspx"></asp:HyperLink> |                         
+                                <asp:LinkButton runat="server" ID="btnLogout" Text="登出" CausesValidation="false"  onclick="btnLogout_Click"></asp:LinkButton>
+                            </LoggedInTemplate>
+                            <RoleGroups>
+                                <asp:RoleGroup Roles="admin">
+                                    <ContentTemplate>
+                                        <asp:HyperLink ID="HyperLink7" runat="server" Text="主頁" NavigateUrl="~/"></asp:HyperLink> |
+                                        <asp:HyperLink ID="HyperLink4" runat="server" Text="系統管理" NavigateUrl="~/backoffice/admin.aspx"></asp:HyperLink> |                         
+                                        <asp:HyperLink ID="HyperLink5" runat="server" Text="我的資料" NavigateUrl="~/member.aspx"></asp:HyperLink> |                         
+                                        <asp:HyperLink ID="HyperLink3" runat="server" Text="我的影片" NavigateUrl="~/myvideo.aspx"></asp:HyperLink> |                         
+                                        <asp:HyperLink ID="HyperLink2" runat="server" Text="我的資訊" NavigateUrl="~/mycollection.aspx"></asp:HyperLink> |                         
+
+                                        <asp:LinkButton runat="server" ID="btnLogout1" Text="登出" CausesValidation="false" onclick="btnLogout_Click"></asp:LinkButton>
+                                    </ContentTemplate>                            
+                                </asp:RoleGroup>
+                            </RoleGroups>
+                        </asp:LoginView>
+                        
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+
+                    </div>
+                    </div>
+
+                    <div id="header-search">
+                        <asp:Panel ID="Panel1" runat="server" DefaultButton="btnSearch">
+                            <asp:TextBox runat="server" ID="txtSearch" CssClass="text"></asp:TextBox>
+                            <%--<asp:TextBoxWatermarkExtender ID="txtSearch_TextBoxWatermarkExtender" 
+                                runat="server" TargetControlID="txtSearch" WatermarkCssClass="text watermark" 
+                                WatermarkText="Search">
+                            </asp:TextBoxWatermarkExtender>--%>
+                            <%--<asp:LinkButton runat="server" ID="btnSearch" Text="search" CssClass="button"></asp:LinkButton>--%>
+                            <asp:ImageButton runat="server" ID="btnSearch" ImageUrl="~/images/search.gif" />
+                            <%--<asp:ImageButton runat="server" ID="btnSearch" ImageUrl="~/images/search_button.gif" />--%>
+                        </asp:Panel>
+                    </div>
+
+                    <div id="topmenu">
+                        <ul>
+                        <asp:Repeater ID="Repeater1" runat="server" DataSourceID="dsChannel">
+                            <ItemTemplate>
+                                <li class="normal">
+                                <asp:HyperLink ID="HyperLink1" runat="server" CssClass="item" NavigateUrl='<%# String.Format("~/channel.aspx?id={0}", Eval("CategoryID")) %>' Text='<%# Eval("CategoryName") %>'></asp:HyperLink>
+                                <asp:HiddenField runat="server" ID="hfdCategoryID" Value='<%# Eval("CategoryID") %>' />
+
+                                <asp:SqlDataSource ID="dsProgram" runat="server" 
+                                        ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                    
+                                    SelectCommand="SELECT [CategoryID], [CategoryName] FROM [view_Category] WHERE (([FunctionID] = @FunctionID) AND ([Enabled] = @Enabled) AND ([ParentID] = @ParentID) AND ([Lang] = @Lang)) ORDER BY [SortOrder]">
+                                    <SelectParameters>
+                                        <asp:ControlParameter ControlID="hfdVideoFunctionID" Name="FunctionID" 
+                                            PropertyName="Value" Type="Int32" />
+                                        <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                                        <asp:ControlParameter Name="ParentID" Type="Int32" ControlID="hfdCategoryID" PropertyName="Value" />
+                                        <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+                                    </SelectParameters>
+                                </asp:SqlDataSource>
+
+                                <asp:Repeater ID="Repeater2" runat="server" DataSourceID="dsProgram">
+                                    <HeaderTemplate>
+                                        <ul>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <li><asp:HyperLink ID="HyperLink1" runat="server" CssClass="sub-item" NavigateUrl='<%# String.Format("~/program.aspx?id={0}", Eval("CategoryID")) %>' Text='<%# Eval("CategoryName") %>'></asp:HyperLink></li>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </ul>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+
+                                </li>
+                            </ItemTemplate>
+                            <SeparatorTemplate>
+                                <li class="normal">|</li>
+                            </SeparatorTemplate>
+                        </asp:Repeater>
+
+                            <li class="normal">|</li>
+
+                            <li class="normal">
+                                <asp:HyperLink ID="HyperLink1" runat="server" CssClass="item" NavigateUrl="~/page/specials.aspx" Text="專頁"></asp:HyperLink>
+                            </li>
+                        </ul>
+ 
+
+                    </div>
+                </div>
+            </div>
+            
+            <asp:HiddenField runat="server" id="hfdVideoFunctionID" />
+            <asp:SqlDataSource ID="dsChannel" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                    
+                SelectCommand="SELECT [CategoryID], [CategoryName] FROM [view_Category] WHERE (([FunctionID] = @FunctionID) AND ([Enabled] = @Enabled) AND ([ParentID] = @ParentID) AND ([Lang] = @Lang)) ORDER BY [SortOrder]">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="hfdVideoFunctionID" Name="FunctionID" 
+                        PropertyName="Value" Type="Int32" />
+                    <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                    <asp:Parameter DefaultValue="0" Name="ParentID" Type="Int32" />
+                    <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+                </SelectParameters>
+            </asp:SqlDataSource>
+
+            <div class="clear"></div>
+
+            <div id="content">
+            <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+            </asp:ContentPlaceHolder>
+            </div>
+            
+            <div id="footer">
+                <div class="sitemap">
+                    <asp:Image runat="server" ImageUrl="~/images/footer_logo.gif" CssClass="logo" />
+
+                    <div class="columns">
+                        <div class="column">
+                            <div class="title">MajiTV</div>
+                            <asp:Repeater runat="server" ID="Repeater3" DataSourceID="dsMajiTVPages">
+                                <HeaderTemplate><ul></HeaderTemplate>
+                                <ItemTemplate><li><asp:HyperLink ID="HyperLink8" runat="server" NavigateUrl='<%# String.Format("~/{0}.htm", Eval("url")) %>' Text='<%# Eval("Title") %>' /></li></ItemTemplate>
+                                <FooterTemplate></ul></FooterTemplate>
+                            </asp:Repeater>
+                        </div>
+
+                        <div class="column">
+                            <div class="title">頻道</div>
+                            <asp:Repeater runat="server" ID="rptChannelFooter" DataSourceID="dsChannel">
+                                <HeaderTemplate><ul></HeaderTemplate>
+                                <ItemTemplate><li><asp:HyperLink runat="server" NavigateUrl='<%# String.Format("~/channel.aspx?id={0}", Eval("CategoryID")) %>' Text='<%# Eval("CategoryName") %>' /></li></ItemTemplate>
+                                <FooterTemplate></ul></FooterTemplate>
+                            </asp:Repeater>
+                        </div>
+
+                        <div class="column">
+                            <div class="title">條款及細則</div>
+                            <asp:Repeater runat="server" ID="Repeater4" DataSourceID="dsLegalPages">
+                                <HeaderTemplate><ul></HeaderTemplate>
+                                <ItemTemplate><li><asp:HyperLink ID="HyperLink8" runat="server" NavigateUrl='<%# String.Format("~/{0}.htm", Eval("url")) %>' Text='<%# Eval("Title") %>' /></li></ItemTemplate>
+                                <FooterTemplate></ul></FooterTemplate>
+                            </asp:Repeater>
+                        </div>
+
+                        <div class="column">
+                            <div class="title">社交連繫</div>
+                            <ul>
+                                <li><a href="http://www.facebook.com/MajiTV" target="_blank">Facebook</a></li>
+                                <li><a href="http://www.twitter.com/majitv_hk" target="_blank">Twitter</a></li>
+                                <li><a href="http://www.weibo.com/majitvhk" target="_blank">微博</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright">
+                    Copyright &copy; Redspots Creative HK Limited. All rights reserved.
+                </div>
+            </div>
+            
+        </div>
+
+        <asp:HiddenField runat="server" ID="hfdMainPageID" />
+        <asp:SqlDataSource ID="dsMajiTVPages" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+            SelectCommand="SELECT [url], [Title] FROM [view_Page] WHERE (([Enabled] = @Enabled) AND ([ParentPageID] = @ParentID) AND ([Lang] = @Lang)) ORDER BY [SortOrder]">
+            <SelectParameters>
+                <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                <asp:ControlParameter ControlID="hfdMainPageID" PropertyName="Value" Name="ParentID" Type="Int32" />
+                <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+            </SelectParameters>
+        </asp:SqlDataSource>
+
+        <asp:HiddenField runat="server" ID="hfdLegalPageID" />
+        <asp:SqlDataSource ID="dsLegalPages" runat="server" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+            SelectCommand="SELECT [url], [Title] FROM [view_Page] WHERE (([Enabled] = @Enabled) AND ([ParentPageID] = @ParentID) AND ([Lang] = @Lang)) ORDER BY [SortOrder]">
+            <SelectParameters>
+                <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                <asp:ControlParameter ControlID="hfdLegalPageID" PropertyName="Value" Name="ParentID" Type="Int32" />
+                <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+            </SelectParameters>
+        </asp:SqlDataSource>
+
+    </form>
+</body>
+</html>
+

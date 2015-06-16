@@ -1,0 +1,50 @@
+﻿<%@ Master Language="VB" MasterPageFile="~/master/MasterPageInner.master" AutoEventWireup="false" CodeFile="MasterPageTeam.master.vb" Inherits="master_MasterPageTeam" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+	<asp:ContentPlaceHolder ID="head" runat="server">
+	</asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+	<div class="service">
+		<div class="netvigator">
+			<asp:Image ID="Image1" runat="server" ImageUrl="~/images/servicemenutopbg.png" />
+			<%--<h2>
+				<asp:Localize ID="locMenuTitle" runat="server" Text=" 產品分類"></asp:Localize>
+			</h2>
+			<br /><br />--%>
+
+			<asp:ListView ID="ListView1" runat="server" DataKeyNames="PageID" 
+				DataSourceID="SqlDataSource1">
+				<ItemTemplate>
+					<li style=" background:none;">
+						<asp:HyperLink ID="HyperLink1" runat="server" Text='<%# Eval("Title") %>' NavigateUrl='<%# String.Format("~/{0}.htm", Eval("url")) %>' style="padding-left:10px;"></asp:HyperLink>
+					</li>
+				</ItemTemplate>
+				<EmptyDataTemplate>
+				</EmptyDataTemplate>
+				<LayoutTemplate>
+					<ul ID="itemPlaceholderContainer" runat="server" style="">
+						<li ID="itemPlaceholder" runat="server" />
+					</ul>
+					</LayoutTemplate>
+					<ItemSeparatorTemplate>
+					</ItemSeparatorTemplate>
+			</asp:ListView>
+			<asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+					ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+					SelectCommand="SELECT * FROM [view_Page] WHERE (([Lang] = @Lang) AND ([ParentPageID] = @ParentPageID) ) ORDER BY [SortOrder]">
+				<SelectParameters>
+					<asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+					<asp:Parameter DefaultValue="23" Name="ParentPageID" Type="Int32" />
+				</SelectParameters>
+				</asp:SqlDataSource>
+
+			<asp:Image ID="Image2" runat="server" ImageUrl="~/images/servicemenubottombg.png" />
+		</div>
+		<div class="content">
+			<asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+			</asp:ContentPlaceHolder>
+		</div>
+	</div>
+</asp:Content>
+

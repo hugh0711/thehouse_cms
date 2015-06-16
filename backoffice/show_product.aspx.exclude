@@ -1,0 +1,90 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPage.master" AutoEventWireup="false" CodeFile="show_product.aspx.vb" Inherits="show_product" %>
+
+<%@ Register src="control/CategoryPathControl.ascx" tagname="CategoryPathControl" tagprefix="uc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <style type="text/css">
+        td { vertical-align: top; }
+        .title { font-weight:bold; }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <uc1:CategoryPathControl ID="CategoryPathControl1" runat="server" />
+    <br />
+    <br />
+    <asp:HiddenField runat="server" ID="hfdProductID" />
+    <table border="0" width="100%">
+        <tr>
+            <td width='<%= Cint(ConfigurationManager.AppSettings("ProductImageWidth")) + 20 %>'>
+                <asp:Image runat="server" ID="imgProduct" BorderWidth="1" BorderColor="#DDDDDD" />
+            </td>
+            <td>
+                <table border="0">
+                    <colgroup>
+                        <col class="title" width="80" />
+                        <col />
+                    </colgroup>
+                    <tr>
+                        <td>型號:</td>
+                        <td>
+                            <asp:Label runat="server" ID="lblProductCode"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>尺吋:</td>
+                        <td>
+                            <asp:Label runat="server" ID="lblSize"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>名稱:</td>
+                        <td>
+                            <asp:Label runat="server" ID="lblName"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>最少訂單:</td>
+                        <td>
+                            <asp:Label runat="server" ID="lblMOQ"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>生產週期:</td>
+                        <td>
+                            <asp:Label runat="server" ID="lblProductionLeadTime"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>標籤:</td>
+                        <td>
+                            <asp:Label runat="server" ID="lblTag"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
+                            <asp:UpdatePanel runat="server" ID="UpdatePanel1" UpdateMode="Conditional">
+                                <ContentTemplate>
+                                    <asp:Button runat="server" ID="btnAddToCart" Text="加到查詢表" />
+                                    <asp:Label runat="server" ID="lblMessage"></asp:Label>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <%--<asp:HyperLink runat="server" ID="lnkQuotation" Text="查詢我們" NavigateUrl="~/quotation.aspx"></asp:HyperLink>--%>
+                <asp:Button runat="server" ID="btnQuotation" Text="查詢我們" />
+            </td>
+            <td align="right">
+                <asp:Button runat="server" ID="btnBack" Text="返回" OnClientClick="history.back();return false;" UseSubmitBehavior="false" />
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+</asp:Content>
+

@@ -1,0 +1,427 @@
+﻿Imports System.IO
+Imports System.Drawing
+Imports System.Data
+
+Partial Class backoffice_event
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            ViewState("dtSize") = CreateDataTable()
+            ViewState("TagIDs") = ""
+            Bind()
+            lblProductID.Text = "0"
+            hfdLang.Value = ConfigurationManager.AppSettings("DefaultLanguage")
+
+
+            If Request.QueryString("id") IsNot Nothing AndAlso Request.QueryString("id") <> "" Then
+                lblProductID.Text = Request("id")
+                LoadProduct(Convert.ToInt32(Request.QueryString("id")))
+            ElseIf Request.QueryString("category") IsNot Nothing AndAlso Request.QueryString("category") <> "" Then
+                LoadCategory(Convert.ToInt32(Request.QueryString("category")))
+                'LoadCategory(Convert.ToInt32(Request.QueryString("category")))
+                If ViewState("FunctionSettings") IsNot Nothing Then
+                    If ViewState("FunctionSettings").hasProductImage Then
+                        btnSave.Text = "下一步"
+                    End If
+                End If
+            Else
+                LoadSiteFunction(CInt(hfdFunctionID.Value))
+                txtCategoryID.Text = "0"
+                If ViewState("FunctionSettings") IsNot Nothing Then
+                    If ViewState("FunctionSettings").hasProductImage Then
+                        btnSave.Text = "下一步"
+                    End If
+                End If
+
+            End If
+        End If
+
+        If lblProductID.Text = "0" Then
+            btnDelete.Visible = False
+            ImagePlaceHolder.Visible = False
+        End If
+    End Sub
+
+    Protected Sub LoadSiteFunction(ByVal FunctionID As Integer)
+        Dim Site As New SiteFunctionClass(FunctionID)
+        With Site
+            lblFunctionName.Text = .FunctionName
+            btnDelete_ConfirmButtonExtender.ConfirmText = String.Format("確定刪除{0}?", .FunctionName)
+            CategoryPlaceHolder.Visible = .HasCategory
+            ProductCodePlaceHolder.Visible = .HasProductCode
+            DetailsPlaceHolder.Visible = .HasDetails
+            PricePlaceHolder.Visible = .HasPrice
+            DatePlaceHolder.Visible = .HasDateRange
+            TagPlaceHolder.Visible = .HasTag
+            ImagePlaceHolder.Visible = (.HasProductImage And (lblProductID.Text <> "0" And lblProductID.Text <> ""))
+            FilePlaceHolder.Visible = .HasFile
+            If .HasFile Then
+                'btnBrowse.Attributes.Add("onclick", String.Format("BrowseServer(""{0}"");return false;", txtFileUrl.ClientID))
+            End If
+        End With
+        ViewState("FunctionSettings") = Site
+        ViewState("fn") = FunctionID
+    End Sub
+
+    Protected Sub Bind()
+        lvSize.DataSource = ViewState("dtSize")
+        lvSize.DataBind()
+    End Sub
+
+    Protected Sub LoadCategory(ByVal CategoryID As Integer)
+        With CategoryPathControl1
+            .CategoryID = CategoryID
+            .ShowPath()
+        End With
+        If CategoryID > 0 Then
+            txtCategoryID.Text = CategoryID
+            Dim CategoryAdapter As New CategoryDataSetTableAdapters.CategoryTableAdapter()
+            ViewState("fn") = CategoryAdapter.GetFunctionID(CategoryID)
+            LoadSiteFunction(ViewState("fn"))
+        Else
+            txtCategoryID.Text = ""
+        End If
+    End Sub
+
+    Protected Sub LoadProduct(ByVal ProductID As Integer)
+        Dim ProductAdaptor As New ProductDataSetTableAdapters.view_ProductTableAdapter()
+        Dim ProductTable As ProductDataSet.view_ProductDataTable
+        Dim ProductRow As ProductDataSet.view_ProductRow
+
+        ProductTable = ProductAdaptor.GetDataByProductID(ProductID, hfdLang.Value)
+        If ProductTable.Rows.Count > 0 Then
+            ProductRow = ProductTable.Rows(0)
+
+            With ProductRow
+                LoadCategory(.CategoryID)
+                txtProductCode.Text = .ProductCode
+                txtName.Text = .Name
+                txtDescription.Text = .Description
+                txtMOQ.Text = .MOQUnit
+                txtLeadTime.Text = .ProductionLeadTime
+                lblSortOrder.Text = .SortOrder
+                chkEnabled.Checked = .Enabled
+                ViewState("fn") = .FunctionID
+                LoadSiteFunction(.FunctionID)
+                txtStartSellDate.Text = .SellingStartDate.ToString("d/M/yyyy")
+                txtEndSellDate.Text = .SellingEndDate.ToString("d/M/yyyy")
+                txtFileUrl.Text = .fileUrl
+
+                Dim ImageAdapter As New ProductDataSetTableAdapters.ProductImageTableAdapter()
+                Dim ImageTable As ProductDataSet.ProductImageDataTable
+                Dim ImageRow As ProductDataSet.ProductImageRow
+                ImageTable = ImageAdapter.GetDataByImage(ProductID, 1)
+                If ImageTable.Rows.Count = 0 Then
+                    imgPreview.ImageUrl = "~/product_image/noimage.jpg?" & Now.Ticks
+                Else
+                    ImageRow = ImageTable.Rows(0)
+                    With ImageRow
+                        imgPreview.ImageUrl = Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), .Url) & "?" & Now().Ticks
+                        imgPreview.Width = .ThumbnailWidth
+                        imgPreview.Height = .ThumbnailHeight
+                    End With
+                End If
+
+                If DetailsPlaceHolder.Visible Then
+                    Dim dt As DataTable = CreateDataTable()
+                    Dim dr As DataRow
+                    Dim SizeAdapter As New ProductDataSetTableAdapters.ProductSizeTableAdapter()
+                    Dim SizeTable As ProductDataSet.ProductSizeDataTable
+                    Dim SizeRow As ProductDataSet.ProductSizeRow
+
+                    SizeTable = SizeAdapter.GetDataByProductID(ProductID)
+                    Dim i As Integer = 0
+                    For Each SizeRow In SizeTable.Rows
+                        With SizeRow
+                            dr = dt.NewRow()
+                            dr("SizeID") = .SizeID
+                            dr("Size") = .Size
+                            i += 1
+                            dr("SortOrder") = i
+                            dt.Rows.Add(dr)
+                        End With
+                    Next
+                    ViewState("dtSize") = dt
+                    Bind()
+                End If
+
+                If TagPlaceHolder.Visible Then
+                    Dim TagAdapter As New ProductDataSetTableAdapters.view_ProductTagTableAdapter()
+                    Dim TagTable As ProductDataSet.view_ProductTagDataTable
+                    Dim TagRow As ProductDataSet.view_ProductTagRow
+
+                    Dim Tags As New List(Of String)
+                    Dim TagIDs As New List(Of Integer)
+                    TagTable = TagAdapter.GetDataByProductID(ProductID, hfdLang.Value)
+                    For Each TagRow In TagTable.Rows
+                        TagIDs.Add(TagRow.TagID)
+                        Tags.Add(TagRow.TagName)
+                    Next
+                    lblTag.Text = Join(Tags.ToArray(), ", ")
+                    ViewState("TagIDs") = TagIDs
+                End If
+
+
+            End With
+            Dim MultilanguageSupport As Boolean = CBool(ConfigurationManager.AppSettings("MultilanguageSupport"))
+            btnNameLanguage.Visible = MultilanguageSupport
+            btnDescLanguage.ValidationGroup = MultilanguageSupport
+        End If
+    End Sub
+
+
+
+    Protected Sub SaveProduct()
+        Dim ProductAdapter As New ProductDataSetTableAdapters.ProductTableAdapter()
+        Dim ProductNameAdapter As New ProductDataSetTableAdapters.ProductNameTableAdapter()
+        Dim CategoryAdatper As New ProductDataSetTableAdapters.CategoryProductTableAdapter()
+        Dim SizeAdapter As New ProductDataSetTableAdapters.ProductSizeTableAdapter()
+        Dim TagAdatper As New TagDataSetTableAdapters.ProductTagTableAdapter()
+        Dim ProductID As Integer = CInt(lblProductID.Text)
+        Dim SortOrder As Integer
+        Dim DateFrom As Date = #1/1/1900#
+        Dim DateTo As Date = #1/1/2999#
+
+        If IsDate(txtStartSellDate.Text) Then
+            DateFrom = CDate(txtStartSellDate.Text)
+        End If
+        If IsDate(txtEndSellDate.Text) Then
+            DateTo = CDate(txtEndSellDate.Text)
+        End If
+
+        ' Save Product
+        If ProductID = 0 Then
+            SortOrder = 1
+            ProductID = ProductAdapter.InsertQuery(CInt(ViewState("fn")), txtProductCode.Text, txtName.Text, txtDescription.Text, 0, txtMOQ.Text, txtLeadTime.Text, Page.User.Identity.Name, chkEnabled.Checked, SortOrder, 0, 0, 0, 0, 0, 0, 0, 0, DateFrom, DateTo, txtFileUrl.Text)
+            'ProductNameAdapter.Insert(ProductID, ConfigurationManager.AppSettings("DefaultLanguage"), txtName.Text)
+            lblProductID.Text = ProductID
+            SaveProductName()
+        Else
+            ProductAdapter.UpdateQuery(txtProductCode.Text, txtName.Text, txtDescription.Text, 0, txtMOQ.Text, txtLeadTime.Text, Page.User.Identity.Name, chkEnabled.Checked, CInt(lblSortOrder.Text), 0, 0, 0, 0, 0, 0, 0, 0, DateFrom, DateTo, txtFileUrl.Text, ProductID)
+            'ProductNameAdapter.UpdateProductName(txtName.Text, ProductID, ConfigurationManager.AppSettings("DefaultLanguage"))
+            SaveProductName()
+        End If
+
+        ' Save Product Category
+        If CategoryPlaceHolder.Visible Then
+            CategoryAdatper.DeleteByProductID(ProductID)
+            CategoryAdatper.Insert(CategoryPathControl1.CategoryID, ProductID)
+        End If
+
+        ' Save Product Size
+        If DetailsPlaceHolder.Visible Then
+            SortOrder = 1
+            For Each item As ListViewItem In lvSize.Items
+                Dim lblID As Label = CType(item.FindControl("lblID"), Label)
+                Dim lblSizeID As Label = CType(item.FindControl("lblSizeID"), Label)
+                Dim txtSize As TextBox = CType(item.FindControl("txtSize"), TextBox)
+                If CInt(lblSizeID.Text) = -1 Then
+                    SizeAdapter.Insert(ProductID, txtSize.Text, SortOrder, True)
+                Else
+                    SizeAdapter.Update(ProductID, txtSize.Text, SortOrder, True, CInt(lblSizeID.Text))
+                End If
+                SortOrder += 1
+            Next
+        End If
+
+        ' Save Product Tag
+        If TagPlaceHolder.Visible Then
+            TagAdatper.DeleteByProductID(ProductID)
+            For Each tagID In ViewState("TagIDs")
+                TagAdatper.Insert(ProductID, tagID)
+            Next
+        End If
+
+    End Sub
+
+#Region "Page Event"
+
+
+    Protected Sub btnClose_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnClose.Click
+        Dim param As String = ""
+        If ViewState("FunctionSettings").hasCategory Then
+            If CategoryPathControl1.CategoryID <> 0 Then
+                param = "?category=" & CategoryPathControl1.CategoryID
+            Else
+                param = "?fn=" & ViewState("fn")
+            End If
+        Else
+            param = "?fn=" & ViewState("fn")
+        End If
+
+        Response.Redirect("~/backoffice/products.aspx" & param)
+    End Sub
+
+    Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSave.Click
+        If Page.IsValid Then
+            Try
+                Dim IsNew As Boolean = (lblProductID.Text = "0")
+                SaveProduct()
+                If IsNew And ViewState("FunctionSettings").hasProductImage Then
+                    Response.Redirect(String.Format("~/backoffice/product_upload.aspx?id={0}", lblProductID.Text))
+                End If
+                lblMessage.Text = "產品儲存成功"
+                lblMessage.ForeColor = Color.Black
+            Catch ex As Exception
+                lblMessage.Text = ex.Message
+                lblMessage.ForeColor = Color.Red
+            End Try
+        End If
+    End Sub
+
+
+#End Region
+
+#Region "Tree View"
+
+    Protected Sub TreeView1_SelectedNodeChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles TreeView1.SelectedNodeChanged
+        If TreeView1.SelectedNode Is Nothing Then
+            lblParentID.Text = "0"
+        Else
+            Dim CategoryID As Integer = Convert.ToInt32(TreeView1.SelectedNode.Value)
+            LoadCategory(CategoryID)
+            btnSelectCategory_ModalPopupExtender.Hide()
+        End If
+        'lblCategory.Text = TreeView1.SelectedNode.Text
+        'ReorderList1.DataBind()
+    End Sub
+
+    Protected Sub TreeView1_TreeNodePopulate(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.TreeNodeEventArgs) Handles TreeView1.TreeNodePopulate
+        'lblCategory.Text = e.Node.Text
+        LoadCategoryTree(e.Node, Convert.ToInt32(e.Node.Value))
+    End Sub
+
+    Protected Sub LoadCategoryTree(ByVal CurrentNode As TreeNode, ByVal ID As Integer)
+        Dim CategoryAdaptor As New CategoryDataSetTableAdapters.CategoryTableAdapter()
+        Dim CategoryTable As CategoryDataSet.CategoryDataTable
+        Dim CategoryRow As CategoryDataSet.CategoryRow
+        Dim node As TreeNode
+
+        CurrentNode.ChildNodes.Clear()
+        CategoryTable = CategoryAdaptor.GetDataByParentID(CInt(ID), CInt(ViewState("fn")))
+        For Each CategoryRow In CategoryTable.Rows
+            With CategoryRow
+                node = New TreeNode(.Category, .CategoryID)
+                node.PopulateOnDemand = True
+                node.SelectAction = TreeNodeSelectAction.SelectExpand
+            End With
+            CurrentNode.ChildNodes.Add(node)
+        Next
+        lblParentID.Text = ID
+    End Sub
+
+#End Region
+
+    Protected Function CreateDataTable() As DataTable
+        Dim dtSize As New DataTable
+        With dtSize
+            .Columns.Add("ID", GetType(Integer))
+            .Columns("ID").AutoIncrement = True
+            .Columns("ID").AutoIncrementSeed = 1
+            .Columns.Add("SizeID", GetType(Integer))
+            .Columns("SizeID").DefaultValue = -1
+            .Columns.Add("Size", GetType(String))
+            .Columns.Add("SortOrder", GetType(Integer))
+        End With
+        Return dtSize
+    End Function
+
+
+    Protected Sub lvSize_ItemDeleting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewDeleteEventArgs) Handles lvSize.ItemDeleting
+        Dim dtSize As DataTable = ViewState("dtSize")
+        Dim item As ListViewItem = lvSize.Items(e.ItemIndex)
+        Dim ID As Integer = CInt(CType(item.FindControl("lblID"), Label).Text)
+
+        For Each dr As DataRow In dtSize.Rows
+            If dr("ID") = ID Then
+                dtSize.Rows.Remove(dr)
+                Exit For
+            End If
+        Next
+        ViewState("dtSize") = dtSize
+        Bind()
+    End Sub
+
+
+    Protected Sub lvSize_ItemInserting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.ListViewInsertEventArgs) Handles lvSize.ItemInserting
+        Dim dtSize As DataTable = ViewState("dtSize")
+        Dim item As ListViewItem = e.Item
+        Dim txtSize As TextBox = CType(item.FindControl("txtSize"), TextBox)
+        Dim row As DataRow = dtSize.NewRow()
+        row("Size") = txtSize.Text
+        row("SortOrder") = dtSize.Rows.Count + 1
+        dtSize.Rows.Add(row)
+        ViewState("dtSize") = dtSize
+        Bind()
+    End Sub
+
+    Protected Sub btnSelectTag_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSelectTag.Click
+        cblTag.DataBind()
+        For Each item As ListItem In cblTag.Items
+            item.Selected = False
+        Next
+        Dim TagAdapter As New ProductDataSetTableAdapters.view_ProductTagTableAdapter()
+        Dim TagTable As ProductDataSet.view_ProductTagDataTable
+        Dim TagRow As ProductDataSet.view_ProductTagRow
+        TagTable = TagAdapter.GetDataByProductID(CInt(lblProductID.Text), hfdLang.Value)
+        For Each TagRow In TagTable.Rows
+            For Each item As ListItem In cblTag.Items
+                If item.Value = TagRow.TagID Then
+                    item.Selected = True
+                    Exit For
+                End If
+            Next
+        Next
+        ModalPopupExtender1.Show()
+    End Sub
+
+    Protected Sub btnTagOK_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnTagOK.Click
+        'Dim TagAdapter As New TagDataSetTableAdapters.ProductTagTableAdapter()
+        Dim ProductID As Integer = CInt(lblProductID.Text)
+        Dim TagList As New List(Of String)
+        Dim TagIDList As New List(Of Integer)
+
+        'TagAdapter.DeleteByProductID(ProductID)
+        For Each item As ListItem In cblTag.Items
+            If item.Selected Then
+                'TagAdapter.Insert(ProductID, item.Value)
+                TagList.Add(item.Text)
+                TagIDList.Add(item.Value)
+            End If
+        Next
+
+        lblTag.Text = Join(TagList.ToArray(), ", ")
+        ViewState("TagIDs") = TagIDList
+        ModalPopupExtender1.Hide()
+    End Sub
+
+    Protected Sub btnDelete_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnDelete.Click
+        ProductClass.Delete(CInt(lblProductID.Text))
+        Response.Redirect(String.Format("~/backoffice/products.aspx?category={0}&fn={1}", CategoryPathControl1.CategoryID, ViewState("fn")))
+    End Sub
+
+    Protected Sub btnImage_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnImage.Click
+        Response.Redirect(String.Format("~/backoffice/product_upload.aspx?id={0}", lblProductID.Text))
+    End Sub
+
+    Protected Sub btnLanguage_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnNameLanguage.Click
+        Response.Redirect("~/backoffice/product_name.aspx?id=" & lblProductID.Text)
+    End Sub
+
+    Protected Sub SaveProductName()
+        ' Create CategoryName to other languages
+        Dim ProductNameAdapter As New ProductDataSetTableAdapters.ProductNameTableAdapter()
+        Dim LanguageSupport() As String = ConfigurationManager.AppSettings("LanguageSupport").ToString().Split(",")
+        Dim DefaultLanguage As String = ConfigurationManager.AppSettings("DefaultLanguage")
+        Dim ProductName As String
+        Dim Translate As New GoogleTranslateClass
+        For Each ToLang In LanguageSupport
+            ProductName = Translate.Translate(txtName.Text, DefaultLanguage, ToLang)
+            If ProductNameAdapter.UpdateQuery(ProductName, CInt(lblProductID.Text), ToLang) = 0 Then
+                ProductNameAdapter.Insert(CInt(lblProductID.Text), ToLang, ProductName)
+            End If
+        Next
+    End Sub
+
+End Class

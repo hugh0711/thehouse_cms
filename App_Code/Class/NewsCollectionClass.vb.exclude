@@ -1,0 +1,29 @@
+﻿Imports Microsoft.VisualBasic
+
+Public Class NewsCollectionClass
+    Inherits List(Of NewsClass)
+
+    Public Sub New()
+
+    End Sub
+
+    Public Sub New(ByVal ProductTable As ProductDataSet.view_ProductImageDataTable, ByVal MaxCount As Integer)
+        Me.Clear()
+        Dim p As NewsClass
+        Dim count As Integer = 0
+        For Each row As ProductDataSet.view_ProductImageRow In ProductTable
+            p = New NewsClass(row)
+            Me.Add(p)
+            count += 1
+            If count >= MaxCount Then
+                Exit For
+            End If
+        Next
+    End Sub
+
+
+    Public Sub New(ByVal ProductTable As ProductDataSet.view_ProductImageDataTable)
+        Me.New(ProductTable, Integer.MaxValue)
+    End Sub
+
+End Class

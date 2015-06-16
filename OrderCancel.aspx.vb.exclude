@@ -1,0 +1,30 @@
+﻿Imports Utility
+
+Partial Class OrderCancel
+	Inherits System.Web.UI.Page
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		If Not IsPostBack Then
+			Bind()
+		End If
+	End Sub
+
+	Protected Sub Bind()
+		If (Request("OrderNumber") & "").Length > 0 Then
+			txtOrderNumber.Text = Request("OrderNumber")
+			OrderCancel(Request("OrderNumber"))
+		End If
+		ClearShoppingCart()
+
+		If MyCulture() = MyCulture_EN Then
+			locOrderCancenl.Text = "Order Cancel, Order Number : "
+			lnkBack.Text = "Back to home"
+		End If
+	End Sub
+
+	Protected Sub OrderCancel(ByVal OrderNumber As String)
+		Dim adapter As New OrderFormDataSetTableAdapters.OrderFormTableAdapter
+		adapter.UpdateOrderStatus(OrderClass.OrderStatus_ORDER_CANCEL, "BY USER", DateTime.Now, OrderNumber)
+	End Sub
+
+End Class

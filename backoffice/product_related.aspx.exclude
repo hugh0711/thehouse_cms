@@ -1,0 +1,18 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/admin.master" AutoEventWireup="false"
+    CodeFile="product_related.aspx.vb" Inherits="backoffice_product_related" %>
+
+<%@ Register Src="../UserControl/ProductAdminControl.ascx" TagName="ProductAdminControl"
+    TagPrefix="uc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+<h2><asp:Label runat="server" id="lblProductName"></asp:Label> : related product</h2>
+    <asp:HiddenField runat="server" ID="hfdProductID" />
+    <div id="admin-content-container">
+        <div id="admin-menu-panel">
+            <uc1:ProductAdminControl ID="ProductAdminControl1" runat="server" />
+        </div>
+        <div id="admin-content">
+        </div>
+    </div>
+</asp:Content>

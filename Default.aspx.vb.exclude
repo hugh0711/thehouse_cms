@@ -1,0 +1,37 @@
+﻿Imports Utility
+
+Partial Class _Default
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+        hfdMainBannerPromoID.Value = ConfigurationManager.AppSettings("MainBannerPromoID")
+        hfdVideoFunctionID.Value = ConfigurationManager.AppSettings("VideoFunctionID")
+        hfdNewsFunctionID.Value = ConfigurationManager.AppSettings("NewsFunctionID")
+
+        Dim dr As PromoDataSet.view_PromoRow
+        Dim AdPromoID As Integer = CInt(ConfigurationManager.AppSettings("AdPromoID"))
+
+        dr = AdvertisementClass.GetAd(AdPromoID, Session("MyCulture"))
+        If IsNothing(dr) Then
+            lnkAd.Visible = False
+        Else
+            lnkAd.Visible = True
+            If dr.PromoUrl <> "" Then
+                lnkAd.NavigateUrl = String.Format("~/ad.ashx?url={0}", Server.UrlEncode(dr.PromoUrl))
+            End If
+            lnkAd.ImageUrl = IO.Path.Combine(ConfigurationManager.AppSettings("PromoImagePath"), dr.PromoSingleImageUrl)
+        End If
+    End Sub
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		If Not IsPostBack Then
+            Bind()
+        End If
+	End Sub
+
+    Protected Sub Bind()
+        Dim TagID1 As Integer = CInt(ConfigurationManager.AppSettings("TagID1"))
+        hfdTagID1.Value = TagID1
+        lblTag1.Text = (New TagDataSetTableAdapters.TagNameTableAdapter()).GetTagName(TagID1, Session("MyCulture"))
+    End Sub
+End Class

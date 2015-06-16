@@ -1,0 +1,65 @@
+﻿Imports Facebook.Web
+Imports Facebook
+
+Partial Class facebook1
+    Inherits System.Web.UI.Page
+
+    'Protected Sub btnFBLogin_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnFBLogin.Click
+    '    Dim AppID As String = ConfigurationManager.AppSettings("FacebookAppID")
+    '    Dim ExtendedPermission As String() = New String() {"email", "user_birthday"}
+    '    Dim RedirectUri As String = "http://majitv.innowil.com/facebook2.aspx"
+
+    '    Dim OAuth As New FacebookOAuthClient() With {.AppId = AppID, .RedirectUri = New UriBuilder(RedirectUri).Uri}
+
+    '    Dim exParameters As New Dictionary(Of String, Object)
+    '    With exParameters
+    '        .Add("permissions", "user_birthday, email")
+    '        .Add("redirect_uri", RedirectUri)
+    '    End With
+
+    '    Dim parameters As New Dictionary(Of String, Object)
+    '    With parameters
+    '        .Add("response_type", "code")
+    '        .Add("display", "popup")
+    '        .Add("redirect_uri", RedirectUri)
+    '    End With
+
+    '    Dim scope As New StringBuilder
+    '    With scope
+    '        .Append(String.Join(",", ExtendedPermission))
+    '        parameters.Add("scope", .ToString)
+    '    End With
+
+    '    Dim LoginUrl As Uri = OAuth.GetLoginUrl(parameters)
+
+    '    Response.Redirect(LoginUrl.ToString())
+    'End Sub
+
+    Protected Sub btnCount_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCount.Click
+        Dim fbWebClient As New FacebookWebClient()
+
+        Dim Result = CType(fbWebClient.Get("me"), IDictionary(Of String, Object))
+        Dim j As Facebook.JsonObject
+        'j = CType(fbWebClient.Get("me?fields=id,name,email,birthday,gender,locale,username"), Facebook.JsonObject)
+        j = CType(fbWebClient.Get("me?fields=id,name,email,birthday,gender,locale,username"), Facebook.JsonObject)
+        imgCount.ImageUrl = String.Format("http://graph.facebook.com/{0}/picture?type=square", CType(j("id"), String))
+        lblCount.Text = j.ToString()
+        'Dim F As Object() = Result("data")
+        'lblCount.Text = CType(Result("name"), String)
+    End Sub
+
+    Protected Sub btnCheck_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCheck.Click
+        Dim fbWebContext As New FacebookWebContext()
+
+        If fbWebContext.IsAuthenticated() Then
+            lblCheck.Text = "Authnticated"
+        Else
+            lblCheck.Text = "N/A"
+        End If
+    End Sub
+
+    Protected Sub btnLogout_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnLogout.Click
+        Dim fbWebContext As New FacebookWebContext()
+
+    End Sub
+End Class

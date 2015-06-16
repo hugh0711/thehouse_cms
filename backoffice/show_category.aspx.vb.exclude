@@ -1,0 +1,58 @@
+﻿Imports System.IO
+Imports System.Threading
+Imports System.Globalization
+
+Partial Class show_category
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Request("id") IsNot Nothing Then
+                ViewState("CategoryID") = CInt(Request("id"))
+            Else
+                ViewState("CategoryID") = 0
+            End If
+            LoadData(ViewState("CategoryID"))
+            hfdCategoryID.Value = ViewState("CategoryID")
+        End If
+
+    End Sub
+
+    Protected Overrides Sub InitializeCulture()
+        Dim MyCulture As String = Session("MyCulture").ToString()
+
+        If String.IsNullOrEmpty(MyCulture) Then
+            MyCulture = ConfigurationManager.AppSettings("DefaultLanguage")
+        End If
+        Culture = MyCulture
+        UICulture = MyCulture
+
+        Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(MyCulture)
+        Thread.CurrentThread.CurrentUICulture = New CultureInfo(MyCulture)
+
+        MyBase.InitializeCulture()
+    End Sub
+
+    Protected Sub LoadData(ByVal CategoryID As Integer)
+        With CategoryPathControl1
+            .CategoryID = CategoryID
+            .ShowPath("showroom.aspx?id=", Resources.ProductResource.AllCategory)
+        End With
+    End Sub
+
+    Protected Sub btnCategory_Click(ByVal sender As Object, ByVal e As System.Web.UI.ImageClickEventArgs)
+        Dim button As ImageButton = CType(sender, ImageButton)
+        hfdCategoryID.Value = CInt(button.CommandArgument)
+        lvwCategory.DataBind()
+    End Sub
+
+    Protected Function GetProductThumbnail(ByVal ProductID As Integer) As String
+        Dim ImageAdapter As New ProductDataSetTableAdapters.ProductImageTableAdapter()
+        Dim url As String = ImageAdapter.GetImageUrl(ProductID, 1)
+        Return Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), url)
+    End Function
+
+    Protected Sub btnQuotation_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnQuotation.Click
+        Response.Redirect("~/quotation.aspx")
+    End Sub
+End Class

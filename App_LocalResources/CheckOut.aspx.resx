@@ -1,0 +1,456 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BoundFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource1.HeaderText" xml:space="preserve">
+    <value>CartId</value>
+  </data>
+  <data name="BoundFieldResource2.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource2.HeaderText" xml:space="preserve">
+    <value>ProductId</value>
+  </data>
+  <data name="BoundFieldResource3.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource3.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource3.HeaderText" xml:space="preserve">
+    <value>數量</value>
+  </data>
+  <data name="BoundFieldResource4.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource4.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource4.HeaderText" xml:space="preserve">
+    <value>價格</value>
+  </data>
+  <data name="BoundFieldResource5.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource5.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BoundFieldResource5.HeaderText" xml:space="preserve">
+    <value>運費</value>
+  </data>
+  <data name="btnBackDisplayResource1.Text" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="btnBackDisplayResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnBackInputResource1.Text" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="btnBackInputResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnCartBackResource1.Text" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="btnCartBackResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnCartNextResource1.Text" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+  <data name="btnCartNextResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnConfirmResource1.Text" xml:space="preserve">
+    <value>確認</value>
+  </data>
+  <data name="btnConfirmResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnSubmitResource1.Text" xml:space="preserve">
+    <value>下一步</value>
+  </data>
+  <data name="btnSubmitResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvShoppingCartResource1.Caption" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvShoppingCartResource1.EmptyDataText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="gvShoppingCartResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgProductResource1.AlternateText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="imgProductResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblProductCodeResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblProductNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblTotalAmountResource1.Text" xml:space="preserve">
+    <value>總數</value>
+  </data>
+  <data name="lblTotalAmountResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListItemResource1.Text" xml:space="preserve">
+    <value>香港</value>
+  </data>
+  <data name="ListItemResource1.Value" xml:space="preserve">
+    <value>Local</value>
+  </data>
+  <data name="ListItemResource2.Text" xml:space="preserve">
+    <value>海外</value>
+  </data>
+  <data name="ListItemResource2.Value" xml:space="preserve">
+    <value>Overseas</value>
+  </data>
+  <data name="ListItemResource3.Text" xml:space="preserve">
+    <value>海外速遞</value>
+  </data>
+  <data name="ListItemResource3.Value" xml:space="preserve">
+    <value>OverseasExpress</value>
+  </data>
+  <data name="loc2ContactPhoneResource1.Text" xml:space="preserve">
+    <value>聯絡電話</value>
+  </data>
+  <data name="loc2CountryResource1.Text" xml:space="preserve">
+    <value>國家</value>
+  </data>
+  <data name="loc2CustomerNameResource1.Text" xml:space="preserve">
+    <value>姓名</value>
+  </data>
+  <data name="loc2DeliveryAddressResource1.Text" xml:space="preserve">
+    <value>送貨地址</value>
+  </data>
+  <data name="loc2EmailResource1.Text" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="loc2PaymentMethodResource1.Text" xml:space="preserve">
+    <value>付款方法</value>
+  </data>
+  <data name="loc2RemarkResource1.Text" xml:space="preserve">
+    <value>留言</value>
+  </data>
+  <data name="locContactPhoneResource1.Text" xml:space="preserve">
+    <value>* 聯絡電話</value>
+  </data>
+  <data name="locCountryResource1.Text" xml:space="preserve">
+    <value>* 國家</value>
+  </data>
+  <data name="locCustomerNameResource1.Text" xml:space="preserve">
+    <value>* 姓名</value>
+  </data>
+  <data name="locDeliveryAddressResource1.Text" xml:space="preserve">
+    <value>* 送貨地址</value>
+  </data>
+  <data name="locEmailResource1.Text" xml:space="preserve">
+    <value>* Email</value>
+  </data>
+  <data name="locPaymentMenthodResource1.Text" xml:space="preserve">
+    <value>付款方法</value>
+  </data>
+  <data name="locRemarkResource1.Text" xml:space="preserve">
+    <value>留言</value>
+  </data>
+  <data name="locTotalAmountResource1.Text" xml:space="preserve">
+    <value>總數</value>
+  </data>
+  <data name="ltrPaymentMethodResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PageResource1.Title" xml:space="preserve">
+    <value>Urban Fitness</value>
+  </data>
+  <data name="pnlCartResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlCartResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFormDisplayResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFormDisplayResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFormInputResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlFormInputResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlShoppingCartResource1.GroupingText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pnlShoppingCartResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="radCountryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="radPaymentMethodResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtContactPhoneResource1.ErrorMessage" xml:space="preserve">
+    <value>聯絡電話必須填寫</value>
+  </data>
+  <data name="reqtxtContactPhoneResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtContactPhoneResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtCustomerNameResource1.ErrorMessage" xml:space="preserve">
+    <value>姓名必須填寫</value>
+  </data>
+  <data name="reqtxtCustomerNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtCustomerNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtDeliveryAddressResource1.ErrorMessage" xml:space="preserve">
+    <value>送貨地址必須填寫</value>
+  </data>
+  <data name="reqtxtDeliveryAddressResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtDeliveryAddressResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtEmailResource1.ErrorMessage" xml:space="preserve">
+    <value>Email 必須填寫</value>
+  </data>
+  <data name="reqtxtEmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="reqtxtEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.AccessibleHeaderText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.FooterText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TemplateFieldResource1.HeaderText" xml:space="preserve">
+    <value>產品</value>
+  </data>
+  <data name="txt2ContactPhoneResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2ContactPhoneResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2CountryResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2CountryResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2CustomerNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2CustomerNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2DeliveryAddressResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2DeliveryAddressResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2EmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2EmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2PaymentMethodResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2PaymentMethodResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2RemarkResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2RemarkResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2TotalAmountResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txt2TotalAmountResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtContactPhoneResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtContactPhoneResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCustomerNameResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCustomerNameResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtDeliveryAddressResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtDeliveryAddressResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtEmailResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtEmailResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtRemarkResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtRemarkResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtTotalAmountResource1.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtTotalAmountResource1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+</root>

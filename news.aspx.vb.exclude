@@ -1,0 +1,83 @@
+﻿Imports Utility
+
+Partial Class news
+    Inherits System.Web.UI.Page
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		If Not IsPostBack Then
+			Bind()
+		End If
+	End Sub
+
+	Protected Sub Bind()
+		hfdFunctionID.Value = 0
+		If (Request.QueryString("fn") & "").Length > 0 Then
+			hfdFunctionID.Value = Convert.ToInt32(Request.QueryString("fn"))
+		End If
+
+        Dim ProductID As Integer = 0
+        If (Request.QueryString("id") & "").Length > 0 Then
+            ProductID = Convert.ToInt32(Request.QueryString("id"))
+        End If
+        hfdProductID.Value = CInt(ProductID)
+
+		Dim r As ProductDataSet.view_ProductRow
+		Dim t As New ProductDataSet.view_ProductDataTable
+
+        If ProductID > 0 Then
+            t = (New ProductDataSetTableAdapters.view_ProductTableAdapter).GetDataByProductID(ProductID, MyCulture)
+        Else
+            t = (New ProductDataSetTableAdapters.view_ProductTableAdapter).GetLatestNews(hfdFunctionID.Value, MyCulture)
+        End If
+
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+
+			With r
+                lblDate.Text = Utility.GetTime(.ModifyDate, "", " 更新")
+                lblTitle.Text = .ProductName
+                If (.fileUrl & "").Trim() <> "" Then
+                    ltrContent.Text = String.Format("<object data='{0}' type='application/pdf' width='100%' height='900'>" _
+                        & "<p>It appears you don't have a PDF plugin for this browser. " _
+                        & "Please <a href='http://www.adobe.com'>download</a> " _
+                        & "Adobe Reader</p> " _
+                        & "</object> ", (.fileUrl & "").Trim())
+                Else
+                    ltrContent.Text = Replace(.Description, vbCr, "<br />")
+                End If
+                imgNews.ImageUrl = IO.Path.Combine(ConfigurationManager.AppSettings("ProductImagePath"), .ProductID & ".jpg")
+				hfdFunctionID.Value = .FunctionID
+				hfdProductID.Value = .ProductID
+			End With
+		End If
+
+		If hfdFunctionID.Value = ConfigurationManager.AppSettings("FunctionIDArticles") Then
+			pnlComment.Visible = True
+
+			If Not Membership.GetUser Is Nothing Then
+				pnlWriteComment.Visible = True
+			Else
+				pnlWriteComment.Visible = False
+			End If
+		Else
+			pnlComment.Visible = False
+		End If
+
+		If MyCulture() = MyCulture_EN Then
+			btnPostComment.Text = "Post"
+		End If
+	End Sub
+
+	Protected Function DisplayUserName(ByVal UserID As String) As String
+		Return UserID
+	End Function
+
+	Protected Sub btnPostComment_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnPostComment.Click
+		If txtWriteComment.Text.Trim.Length > 0 Then
+			CommentClass.PostComment(hfdProductID.Value, CommentClass.CommentType_Articles, txtWriteComment.Text, Membership.GetUser.UserName)
+			txtWriteComment.Text = ""
+			lstComment.DataBind()
+			'Bind()
+		End If
+	End Sub
+End Class

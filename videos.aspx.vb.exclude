@@ -1,0 +1,38 @@
+﻿
+Partial Class videos
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Not String.IsNullOrWhiteSpace(Request("q")) Then
+                LoadData(Request("q"))
+            ElseIf Not String.IsNullOrWhiteSpace(Request("tag")) Then
+                LoadDataByTag(TagClass.DecryptID(Request("tag")))
+            End If
+        End If
+    End Sub
+
+    Protected Sub LoadData(ByVal q As String)
+        If q <> "" Then
+            'Dim TagID As Integer = (New TagDataSetTableAdapters.view_TagTableAdapter()).GetTagID(q).GetValueOrDefault(0)
+            txtSearchQuery.Text = q
+            Dim FunctionID As Integer = CInt(ConfigurationManager.AppSettings("VideoFunctionID"))
+            q = String.Format("%{0}%", q)
+            With lvwVideo
+                '.DataSource = (New ProductDataSetTableAdapters.view_ProductImageTagTableAdapter()).GetDataBySearch(q, Session("MyCulture"), FunctionID, TagID)
+                .DataSource = (New ProductDataSetTableAdapters.view_ProductImageTableAdapter()).GetDataBySearch(q, Session("MyCulture"), FunctionID)
+                .DataBind()
+            End With
+        End If
+    End Sub
+
+    Protected Sub LoadDataByTag(ByVal TagID As Integer)
+        Dim FunctionID As Integer = CInt(ConfigurationManager.AppSettings("VideoFunctionID"))
+        txtSearchQuery.Text = (New TagDataSetTableAdapters.view_TagTableAdapter()).GetTagName(TagID, Session("MyCulture"))
+        With lvwVideo
+            .DataSource = (New ProductDataSetTableAdapters.view_ProductImageTagTableAdapter()).GetDataByTagID(TagID, Session("MyCulture"), FunctionID)
+            .DataBind()
+        End With
+    End Sub
+
+End Class

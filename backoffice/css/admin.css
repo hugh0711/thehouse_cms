@@ -1,0 +1,202 @@
+﻿body { background-color:#ddd; margin:0; }
+
+input, textarea, body, select { font-family:  微軟正黑體, Segoe UI, Verdana, Arial, Helvetica, sans-serif; font-size:12px; }
+h1, h2, h3 { font-family:  微軟正黑體, Segoe UI, Verdana, Arial, Helvetica, sans-serif; }
+.category { font-size:14px; font-weight: bold; }
+.footer { font-size:0.8em; text-align:center;}
+
+.menuTitle { background-color:#ddd; line-height:1.8em; display:block; font-weight:bold; }
+.menu { border-right: solid 1px #AAA; height:100% }
+.menu a {  padding:5px 10px; display:block; text-decoration:none; color:Black; }
+.menu a:hover { text-decoration:underline; }
+
+#header { margin:0; border-bottom: solid 2px grey; }
+#header h1 { padding-top:10px; text-indent:20px; color:#333; }
+
+.watermark {
+	background: #FFAAFF;
+}
+
+.popupControl {
+	background-color:#AAD4FF;
+	position:absolute;
+	visibility:hidden;
+	border-style:solid;
+	border-color: Black;
+	border-width: 2px;
+}
+
+.modalBackground {
+	background-color:Gray;
+	filter:alpha(opacity=70);
+	opacity:0.7;
+}
+
+.modalPopup {
+	background-color:#ffffdd;
+	border-width:3px;
+	border-style:solid;
+	border-color:Gray;
+	padding:3px;
+	width:250px;
+}
+
+/*---- For UpdatePanelExtender -----*/
+.tdHighlight
+{
+	background-color: White;
+	padding: 8px;
+	border-right: black 1px solid;
+	border-top: black 1px solid;
+	border-left: black 1px solid;
+	border-bottom: black 1px solid;
+}
+
+.dialogHeader
+{
+	padding-left: 8px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	font-weight: bold;
+	font-size: 110%;
+	color: white;
+	font-family: Verdana;
+	background-color: #7C6F57;
+}
+
+.closeIcon
+{
+	background-position: right top;
+	background-image: url('../Images/close_icon.gif');
+	background-repeat: no-repeat;
+	position: absolute;
+	cursor: pointer;
+	width: 19px;
+	top: 1px;
+	height: 19px;
+	right: 1px;
+}
+
+
+/* Flan Control */
+.updateProgress
+{
+	position: absolute;
+	background-color: #fff;
+	filter: alpha(opacity=70);
+	MozOpacity: 0.7;
+	opacity: 0.7;
+	padding: 0px;
+	margin: 0px;
+}
+.updateProgress div
+{
+	background-color: white;
+	padding: 4px;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+}
+
+.popupControl
+{
+	background-color:#AAD4FF;
+	position:absolute;
+	visibility:hidden;
+	border-style: solid;
+	border-color: Black;
+	border-width: 2px;
+}
+
+.reorderList li
+{
+    list-style: none;
+}
+.reorderItem 
+{
+    width:100%;
+    border:dashed 2px #333;
+    height:30px;
+}
+.reorderhandle
+{
+    margin:5px 5px;
+    width:15px;
+    height:18px;
+    cursor: n-resize;
+    background-color: #666;
+}
+.reorderhandle:hover 
+{
+    background-color: #ddd;
+}
+
+.gridview th { background-color:#33d; font-size:11px; line-height:2em; color:White; }
+.gridview th a { color:White; }
+.gridview td { vertical-align:top; font-size:11px; line-height:1.5em; }
+.gridview .altrow { background-color:#F2F2F2; }
+.trhighlight:hover { background-color:#EEEEEE; }
+
+.sitemap-list { font-size:13px; line-height: 1.5em; list-style-image:url('../images/bullet_orange.gif') }
+
+.imageFrame { border:solid 1px #ddd; }
+.errorText { display: block; width:100%; background-color: #660000; color:#FFFFFF; padding:2px; }
+.tableCaption {background-color:#DDDDDD;}
+
+/* FORM ELEMENTS   
+----------------------------------------------------------*/
+
+fieldset { margin: 1em 0px; padding: 1em; border: 1px solid #ccc; }
+fieldset p { margin: 2px 12px 10px 10px; }
+fieldset.login label, fieldset.register label, fieldset.changePassword label { display: block; }
+fieldset label.inline { display: inline; }
+legend { font-size: 1.1em; font-weight: 600; padding: 2px 4px 8px 4px; }
+input.search { width: 250px; }
+input.textEntry, textarea.textEntry, select.textEntry { width: 250px; border: 1px solid #ccc; }
+input.passwordEntry  { width: 250px; border: 1px solid #ccc; }
+input.number { width:80px; border: 1px solid #ccc; }
+input.date { width:100px; border: 1px solid #ccc;  }
+input.year { width:80px; }
+input.month {width:80px; }
+input.time { width:60px; text-align:right; }
+input.day {width:80px; }
+.ddl-text { margin-top:4px; }
+div.accountInfo { width: 42%; }
+
+/* MISC  
+----------------------------------------------------------*/
+
+.clear { clear: both; }
+.left { float:left; }
+.right { float:right; }
+.title { display: block; float: left; text-align: left; width: auto; }
+.item-title { font-weight:bold; font-size:1.5em; }
+.loginDisplay { font-size: 1.1em; display: block; text-align: right; padding: 10px; color: White; }
+.loginDisplay a:link { color: white; }
+
+.loginDisplay a:visited { color: white; }
+.loginDisplay a:hover { color: white; }
+.failureNotification { font-size: 1.2em; color: Red; }
+.bold { font-weight: bold; }
+.submitButton { text-align: right; padding-right: 10px; }
+.watermarkText { color:#aaa; }
+
+table.infoGrid { padding:2px 5px; border:0; width:100%; display:block; }
+fieldset.info { padding:5px 5px; margin: 5px 5px; }
+.dataEntry { background-color:#ffe; }
+.caption, colgroup.caption { width:100px; vertical-align:top; font-weight:bold; }
+
+.disabled { background-color:#ddd; }
+
+
+.form-panel { }
+.form-panel-left { float:left; width:48%; padding:0px 5px; }
+.form-panel-right { float:left; width:48%; padding:0px 5px; }
+
+.button-panel { text-align:right; padding:8px 0; }
+.button-panel input { min-width:80px;text-align:center; }
+.button-panel input.left { float:left; }
+.button-panel-1 { padding:8px 0; }
+.button-panel-1 input { min-width:80px; text-align:center; }
+
+.invalid { color:Red; }

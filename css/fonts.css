@@ -1,0 +1,91 @@
+@charset "utf-8";
+/* CSS Document */
+
+/*Skin Style Sheet Notes for [JOB NAME]
+
+version:   		1.0
+author:    		Start Creative Hong Kong
+website:   		http://www.[THESITE].com/
+
+last updated:	15/10/2009
+
+Basic Color Palette
+
+primary-color:
+secondary-color:
+titles-color:
+font-color:
+link:
+link-hover:
+link-visited:
+
+Font-size Adjustment
+
+To change the size of a font, use a percentage value from the list below.
+Always use percentages as the units because they render more consistently than ems,
+and because they allow user-initiated resizing (unlike pixels).
+		 
+For pixels(px) Declare the appropriate percentage(%)
+
+				Pixels 	EMs 		Percent Points
+				6px 	0.462em 	46.2% 	5pt
+				7px 	0.538em 	53.8% 	5pt
+				8px 	0.615em 	61.5% 	6pt
+				9px 	0.692em 	69.2% 	7pt
+				10px 	0.769em 	77% 	8pt
+				11px 	0.846em 	85% 	8pt
+				12px 	0.923em 	93% 	9pt
+				13px 	1em 		100% 	10pt
+				14px 	1.077em 	108% 	11pt
+				15px 	1.154em 	116% 	11pt
+				16px 	1.231em 	123.1% 	12pt
+				17px 	1.308em 	131% 	13pt
+				18px 	1.385em 	138.5% 	14pt
+				19px 	1.462em 	146.5% 	14pt
+				20px 	1.538em 	153.9% 	15pt
+				21px 	1.615em 	161.6% 	16pt
+				22px 	1.692em 	167% 	17pt
+				23px 	1.769em 	174% 	17pt
+				24px 	1.846em 	182% 	18pt 
+				
+For custom font sizes see http://pxtoem.com/ and use the 100% setting as body size.
+				
+Skin Style Sheet Notes end */ 
+
+
+body {
+	font:13px/1.231 arial,helvetica,clean,sans-serif;
+	*font-size:small; /* for IE */
+	*font:x-small; /* for IE in quirks mode */
+}
+
+/**
+ * Nudge down to get to 13px equivalent for these form elements
+ */ 
+select,
+input,
+button,
+textarea {
+	font:99% arial,helvetica,clean,sans-serif;
+}
+
+/**
+ * To help tables remember to inherit
+ */
+table {
+	font-size:inherit;
+	font:100%;
+}
+
+/**
+ * Bump up IE to get to 13px equivalent for these fixed-width elements
+ */
+pre,
+code,
+kbd,
+samp,
+tt {
+	font-family:monospace;
+	*font-size:108%;
+	line-height:100%;
+}

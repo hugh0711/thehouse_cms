@@ -1,0 +1,43 @@
+﻿Imports Utility
+
+Partial Class SendPayPalPayment
+    Inherits System.Web.UI.Page
+
+	Public Function PayPalAccount() As String
+		Return ConfigurationManager.AppSettings("PaypalAccount")
+	End Function
+
+	Public Function GetTotalAmount() As String
+		Return AmountToString(GetShoppingCart.TotalAmount)
+	End Function
+
+	Public Function GetReturnUrl() As String
+		Return String.Format("http://{0}/OrderComplete.aspx?OrderNumber={1}", Request.Url.Host, Request("OrderNumber"))
+	End Function
+
+	Public Function GetReturnOrderCancel() As String
+		Return String.Format("http://{0}/OrderCancel.aspx?OrderNumber={1}", Request.Url.Host, Request("OrderNumber"))
+	End Function
+
+	Public Function GetPaypalNotify_url() As String
+		Return ConfigurationManager.AppSettings("PaypalNotify_url")
+	End Function
+
+	Protected Sub Page_Disposed(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Disposed
+		'Session("OrderNumber") = Nothing
+		'Session("TotalAmount") = Nothing
+	End Sub
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		'If Not IsPostBack Then
+		'	Bind()
+		'End If
+	End Sub
+
+	Protected Sub Bind()
+		'If (Session("OrderNumber") & "").Length > 0 Then
+		'	txtOrderNumber.Text = Session("OrderNumber")
+		'End If
+		'ClearShoppingCart()
+	End Sub
+End Class

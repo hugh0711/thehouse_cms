@@ -1,0 +1,242 @@
+﻿Imports System.Net
+Imports Utility
+Imports System.IO
+
+Partial Class paypal
+	Inherits System.Web.UI.Page
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		'Post back to either sandbox or live
+		Dim strSandbox As String = "https://www.sandbox.paypal.com/cgi-bin/webscr"
+		' string strLive = "https://www.paypal.com/cgi-bin/webscr"
+		Dim req As HttpWebRequest = WebRequest.Create(strSandbox)
+
+		'Set values for the request back
+		req.Method = "POST"
+		req.ContentType = "application/x-www-form-urlencoded"
+		Dim param As Byte() = Request.BinaryRead(HttpContext.Current.Request.ContentLength)
+		Dim strRequest As String = Encoding.ASCII.GetString(param)
+		strRequest += "&cmd=_notify-validate"
+		req.ContentLength = strRequest.Length
+
+		'for proxy
+		'WebProxy proxy = new WebProxy(new Uri("http:'url:port#"));
+		'req.Proxy = proxy;
+
+		'Send the request to PayPal and get the response
+		Dim streamOut As StreamWriter = New StreamWriter(req.GetRequestStream(), System.Text.Encoding.ASCII)
+		streamOut.Write(strRequest)
+		streamOut.Close()
+		Dim streamIn As StreamReader = New StreamReader(req.GetResponse().GetResponseStream())
+		Dim strResponse As String = streamIn.ReadToEnd()
+		streamIn.Close()
+
+		If strResponse = "VERIFIED" Then
+			'UPDATE YOUR DATABASE
+
+			Dim txWriter As TextWriter = New StreamWriter(Server.MapPath("~/Upload/") + Request("item_number").ToString() + ".txt")
+			'Dim txWriter As TextWriter = New StreamWriter(Server.MapPath("~/Upload/") + "TEXT" + ".txt")
+			txWriter.WriteLine(strResponse)
+			txWriter.Close()
+
+			'check the payment_status is Completed
+			'check that txn_id has not been previously processed
+			'check that receiver_email is your Primary PayPal email
+			'check that payment_amount/payment_currency are correct
+			'process payment
+			GetPayPalInformation()
+
+		ElseIf strResponse = "INVALID" Then
+			'UPDATE YOUR DATABASE
+
+			'Dim txWriter As TextWriter = New StreamWriter(Server.MapPath("~/Upload/") + Session("OrderNumber").ToString() + ".txt")
+			'Dim txWriter As TextWriter = New StreamWriter(Server.MapPath("~/Upload/") + "TEXT" + ".txt")
+			'txWriter.WriteLine(strResponse)
+			'log for manual investigation
+			'txWriter.Close()
+		Else
+			'UPDATE YOUR DATABASE
+
+			'Dim txWriter As TextWriter = New StreamWriter(Server.MapPath("~/Upload/") + Session("OrderNumber").ToString() + ".txt")
+			'Dim txWriter As TextWriter = New StreamWriter(Server.MapPath("~/Upload/") + "TEXT" + ".txt")
+			'txWriter.WriteLine("Invalid")
+			''log response/ipn data for manual investigation
+			'txWriter.Close()
+		End If
+	End Sub
+
+	Protected Sub GetPayPalInformation()
+		Dim OrderAdapter As New OrderFormDataSetTableAdapters.OrderFormTableAdapter
+
+		Dim r As PayPalLogDataSet.PayPalLogRow
+		Dim t As New PayPalLogDataSet.PayPalLogDataTable
+		Dim dt As String = ""
+		r = t.NewPayPalLogRow
+		PayPalLogClass.InitRow(r)
+
+		If (Request("receiver_email") & "").Length > 0 Then
+			r.receiver_email = Request("receiver_email")
+		End If
+		If (Request("receiver_id") & "").Length > 0 Then
+			r.receiver_id = Request("receiver_id")
+		End If
+		If (Request("residence_country") & "").Length > 0 Then
+			r.residence_country = Request("residence_country")
+		End If
+		If (Request("transaction_subject") & "").Length > 0 Then
+			r.transaction_subject = Request("transaction_subject")
+		End If
+		If (Request("txn_id") & "").Length > 0 Then
+			r.txn_id = Request("txn_id")
+		End If
+		If (Request("txn_type") & "").Length > 0 Then
+			r.txn_type = Request("txn_type")
+		End If
+		If (Request("payer_email") & "").Length > 0 Then
+			r.payer_email = Request("payer_email")
+		End If
+		If (Request("payer_id") & "").Length > 0 Then
+			r.payer_id = Request("payer_id")
+		End If
+		If (Request("payer_status") & "").Length > 0 Then
+			r.payer_status = Request("payer_status")
+		End If
+		If (Request("first_name") & "").Length > 0 Then
+			r.first_name = Request("first_name")
+		End If
+		If (Request("last_name") & "").Length > 0 Then
+			r.last_name = Request("last_name")
+		End If
+		If (Request("address_city") & "").Length > 0 Then
+			r.address_city = Request("address_city")
+		End If
+		If (Request("address_country") & "").Length > 0 Then
+			r.address_country = Request("address_country")
+		End If
+		If (Request("address_country_code") & "").Length > 0 Then
+			r.address_country_code = Request("address_country_code")
+		End If
+		If (Request("address_name") & "").Length > 0 Then
+			r.address_name = Request("address_name")
+		End If
+		If (Request("address_state") & "").Length > 0 Then
+			r.address_state = Request("address_state")
+		End If
+		If (Request("address_status") & "").Length > 0 Then
+			r.address_status = Request("address_status")
+		End If
+		If (Request("address_street") & "").Length > 0 Then
+			r.address_street = Request("address_street")
+		End If
+		If (Request("address_zip") & "").Length > 0 Then
+			r.address_zip = Request("address_zip")
+		End If
+		If (Request("custom") & "").Length > 0 Then
+			r.custom = Request("custom")
+		End If
+		If (Request("handling_amount") & "").Length > 0 Then
+			r.handling_amount = Convert.ToDecimal(Request("handling_amount"))
+		End If
+		If (Request("item_name") & "").Length > 0 Then
+			r.item_name = Request("item_name")
+		End If
+		If (Request("item_number") & "").Length > 0 Then
+			r.item_number = Request("item_number")
+		End If
+		If (Request("mc_currency") & "").Length > 0 Then
+			r.mc_currency = Request("mc_currency")
+		End If
+		If (Request("mc_fee") & "").Length > 0 Then
+			r.mc_fee = Convert.ToDecimal(Request("mc_fee"))
+		End If
+		If (Request("mc_gross") & "").Length > 0 Then
+			r.mc_gross = Convert.ToDecimal(Request("mc_gross"))
+		End If
+		If (Request("payment_date") & "").Length > 0 Then
+			dt = Request("payment_date")
+			dt = dt.Replace(" PST", "")
+			dt = dt.Replace(" PDT", "")
+			r.payment_date = DateTime.ParseExact(dt, "HH:mm:ss MMM dd, yyyy", Nothing)
+		End If
+		If (Request("payment_fee") & "").Length > 0 Then
+			r.payment_fee = Convert.ToDecimal(Request("payment_fee"))
+		End If
+		If (Request("payment_gross") & "").Length > 0 Then
+			r.payment_gross = Convert.ToDecimal(Request("payment_gross"))
+		End If
+		If (Request("payment_status") & "").Length > 0 Then
+			r.payment_status = Request("payment_status")
+		End If
+		If (Request("payment_type") & "").Length > 0 Then
+			r.payment_type = Request("payment_type")
+		End If
+		If (Request("quantity") & "").Length > 0 Then
+			r.quantity = Convert.ToInt32(Request("quantity"))
+		End If
+		If (Request("shipping") & "").Length > 0 Then
+			r.shipping = Convert.ToDecimal(Request("shipping"))
+		End If
+		If (Request("tax") & "").Length > 0 Then
+			r.tax = Convert.ToDecimal(Request("tax"))
+		End If
+		If (Request("verify_sign") & "").Length > 0 Then
+			r.verify_sign = Request("verify_sign")
+		End If
+
+
+		'Check either OrderNumber Exist
+		t = (New PayPalLogDataSetTableAdapters.PayPalLogTableAdapter).GetDataByItemNumber(r.item_number)
+		If Not t.Rows.Count > 0 Then
+			InsertPayPalLog(r)
+			'Update Payment
+			Dim status As String = (New PayPalLogDataSetTableAdapters.PayPalStatusMapTableAdapter).GetByPayPalStatus(r.payment_status)
+			If status.Length > 0 Then
+				OrderAdapter.UpdateTransaction(status, r.txn_id, r.payment_date, r.payment_status, "PayPal", DateTime.Now, r.item_number)
+				Dim email As New EmailClass
+				'email.SendPaymentNotification(r.item_number)
+			End If
+		End If
+	End Sub
+
+	Protected Sub InsertPayPalLog(ByVal r As PayPalLogDataSet.PayPalLogRow)
+		Dim adapter As New PayPalLogDataSetTableAdapters.PayPalLogTableAdapter
+		adapter.InsertQuery( _
+	  r.receiver_email _
+	  , r.receiver_id _
+	  , r.residence_country _
+	  , r.transaction_subject _
+	  , r.txn_id _
+	  , r.txn_type _
+	  , r.payer_email _
+	  , r.payer_id _
+	  , r.payer_status _
+	  , r.first_name _
+	  , r.last_name _
+	  , r.address_city _
+	  , r.address_country _
+	  , r.address_country_code _
+	  , r.address_name _
+	  , r.address_state _
+	  , r.address_status _
+	  , r.address_street _
+	  , r.address_zip _
+	  , r.custom _
+	  , r.handling_amount _
+	  , r.item_name _
+	  , r.item_number _
+	  , r.mc_currency _
+	  , r.mc_fee _
+	  , r.mc_gross _
+	  , r.payment_date _
+	  , r.payment_fee _
+	  , r.payment_gross _
+	  , r.payment_status _
+	  , r.payment_type _
+	  , r.quantity _
+	  , r.shipping _
+	  , r.tax _
+	  , r.verify_sign _
+	  )
+
+	End Sub
+End Class

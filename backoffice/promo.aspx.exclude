@@ -1,0 +1,126 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/backoffice/master/Admin.master" AutoEventWireup="false" CodeFile="promo.aspx.vb" Inherits="backoffice_promo" %>
+<%@ Register Assembly="Flan.Controls" Namespace="Flan.Controls" TagPrefix="cc1" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+	<style type="text/css">
+	 .watertext {color:#CCCCCC;}
+	</style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<h2>Banner</h2>
+<asp:HiddenField runat="server" ID="hfdPromoSettingID" />
+<asp:HiddenField runat="server" ID="hfdPromoID" />
+<asp:HiddenField runat="server" ID="hfdFunctionID" />
+<asp:HiddenField runat="server" ID="hfdSortOrder" />
+
+<table class="tableDetail">
+   <colgroup>
+        <col class="tableCaption" width="100" />
+        <col />
+    </colgroup>
+	<tr>
+		<td></td>
+		<td>
+			<asp:TabContainer ID="TabContainer1" runat="server">
+				<asp:TabPanel runat="server" ID="tabEN">
+					<HeaderTemplate>Chinese</HeaderTemplate>
+					<ContentTemplate>
+						Name :
+						<asp:TextBox ID="txtLangNameEN" runat="server" Width="200px"></asp:TextBox>
+						<br />
+						<asp:Label ID="txtUrlEN" runat="server" Width="500px" Visible="false"></asp:Label>
+						<br />
+						<asp:FileUpload ID="FileUploadEN" runat="server" />
+						<br />
+						<asp:Image ID="ImgEN" runat="server" Height="100px" />
+					</ContentTemplate>
+				</asp:TabPanel>
+				<asp:TabPanel runat="server" ID="tabHK" Visible="false">
+					<HeaderTemplate>Chinese</HeaderTemplate>
+					<ContentTemplate>
+						Name :
+						<asp:TextBox ID="txtLangNameHK" runat="server" Width="200px"></asp:TextBox>
+						<br />
+						<asp:Label ID="txtUrlHK" runat="server" Width="500px" Visible="false"></asp:Label>
+						<br />
+						<asp:FileUpload ID="FileUploadHK" runat="server" />
+						<br />
+						<asp:Image ID="ImgHK" runat="server" Height="100px" />
+					</ContentTemplate>
+				</asp:TabPanel>
+			</asp:TabContainer>
+		</td>
+	</tr>
+    <asp:PlaceHolder ID="phdDate" runat="server" Visible="false">
+
+	<tr>
+		<td>Create Date</td>
+		<td>
+			<asp:TextBox ID="txtBannerCreateDate" runat="server" Width="300px"></asp:TextBox>
+			<asp:CalendarExtender ID="txtBannerCreateDate_CalendarExtender" runat="server" ClearTime="True" Enabled="True" Format="yyyy-MM-dd" 
+				TargetControlID="txtBannerCreateDate">
+			</asp:CalendarExtender>
+			<asp:CustomValidator ID="custvaltxtBannerCreateDate" runat="server" ErrorMessage="Date incorrect" ControlToValidate="txtBannerCreateDate" Display="Dynamic"></asp:CustomValidator>
+		</td>
+	</tr>
+	</asp:PlaceHolder>
+	<tr>
+		<td>Link</td>
+		<td>
+		    <asp:SqlDataSource runat="server" ID="dsTag" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                SelectCommand="SELECT [TagID], [Tag] FROM [Tag] WHERE (([Enabled] = @Enabled) AND ([FunctionID] = @FunctionID)) ORDER BY [SortOrder]">
+                <SelectParameters>
+                    <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                    <asp:ControlParameter ControlID="hfdFunctionID" Name="FunctionID" 
+                        PropertyName="Value" Type="Int32" />
+                </SelectParameters>
+		    </asp:SqlDataSource>
+		    <asp:UpdatePanel runat="server" ID="UpdatePanel1">
+		        <ContentTemplate>
+		            <asp:RadioButton runat="server" ID="rbLinkTag" Text="Use Tag" AutoPostBack="true" GroupName="link" />
+        		    <asp:Panel runat="server" ID="pnlLinkTag" GroupingText="Select Tag" style="padding-left:20px;">
+		            <asp:RadioButtonList runat="server" ID="rblTag" DataSourceID="dsTag" 
+                                DataTextField="Tag" DataValueField="TagID" AutoPostBack="true" 
+                                RepeatDirection="Horizontal" RepeatLayout="Flow"></asp:RadioButtonList>
+        		    </asp:Panel>
+		            <asp:RadioButton runat="server" ID="rbLinkUrl" Text="Other Url" AutoPostBack="true" GroupName="link" />
+        		    <asp:Panel runat="server" ID="pnlLinkUrl" Enabled="false" GroupingText="Other Url" style="padding-left:20px;">
+			            <asp:TextBox ID="txtBannerUrl" runat="server" Width="500px" Visible="true"></asp:TextBox><br />
+			            <asp:Label ID="Label1" runat="server" Text="use ~ to replace http://www.winexpert.com.hk. For example, ~/promote.aspx?id=1"></asp:Label>
+			        </asp:Panel>
+		        </ContentTemplate>
+		    </asp:UpdatePanel>
+		    <asp:UpdateProgress runat="server" ID="UpdateProgress1" AssociatedUpdatePanelID="UpdatePanel1">
+		        <ProgressTemplate>
+		            <div></div>
+		        </ProgressTemplate>
+		    </asp:UpdateProgress>
+            <cc1:UpdateProgressOverlayExtender ID="UpdateProgressOverlayExtender1" runat="server" CssClass="updateProgress" TargetControlID="UpdateProgress1" ControlToOverlayID="UpdatePanel1" />
+
+		</td>
+	</tr>
+	<tr>
+		<td><%--IsDisable--%></td>
+		<td>
+			<asp:CheckBox ID="chkEnabled" runat="server" Text="Enabled" Visible="true"/>
+		</td>
+	</tr>
+	<tr>
+	    <td></td>
+		<td>
+			<asp:Button ID="btnSave" runat="server" Text="Save" />
+			<asp:Button ID="btnBack" runat="server" Text="Back" CausesValidation="False" />
+			<asp:Button ID="btnDelete" runat="server" Text="Delete" CausesValidation="False" />
+			<asp:ConfirmButtonExtender ID="btnDelete_ConfirmButtonExtender" runat="server" 
+				ConfirmText="Confirm Delete ?" Enabled="True" TargetControlID="btnDelete">
+			</asp:ConfirmButtonExtender>
+		</td>
+	</tr>
+</table>
+</asp:Content>
+

@@ -1,0 +1,20 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Master/MasterPage.master" AutoEventWireup="false" CodeFile="OrderCancel.aspx.vb" Inherits="OrderCancel" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<%--<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolderBanner" Runat="Server">
+</asp:Content>--%>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+<br />
+<br />
+<br />
+	<asp:Localize ID="locOrderCancenl" runat="server" 
+		Text="訂單取消, 已取消的訂單編號 : "></asp:Localize>
+	<asp:Label ID="txtOrderNumber" runat="server" Text=""></asp:Label>
+    <br /><br />
+    <asp:HyperLink ID="lnkBack" runat="server" Text="返回主頁" NavigateUrl="~/Default.htm"></asp:HyperLink>
+<br />
+<br />
+<br />
+</asp:Content>
+

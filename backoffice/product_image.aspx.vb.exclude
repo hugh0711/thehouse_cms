@@ -1,0 +1,222 @@
+﻿Imports System.Drawing
+Imports System.IO
+
+
+Partial Class backoffice_product_image
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Request.QueryString("product") IsNot Nothing Then
+                lblProductID.Text = Request.QueryString("product")
+                ShowPanel(1)
+                LoadData()
+            End If
+        End If
+    End Sub
+
+    Protected Sub ShowPanel(ByVal index As Integer)
+        Panel1.Visible = False
+        Panel2.Visible = False
+
+        Select Case index
+            Case 1
+                Panel1.Visible = True
+            Case 2
+                Panel2.Visible = True
+        End Select
+    End Sub
+
+    Protected Sub LoadData()
+        Dim ProductAdaptor As New ProductDataSetTableAdapters.ProductTableAdapter()
+        Dim ProductTable As ProductDataSet.ProductDataTable
+        Dim ProductRow As ProductDataSet.ProductRow
+        Dim ImageAdaptor As New ProductDataSetTableAdapters.ProductImageTableAdapter()
+        Dim ImageTable As ProductDataSet.ProductImageDataTable
+        Dim ImageRow As ProductDataSet.ProductImageRow
+        Dim ProductID As Integer = Convert.ToInt32(lblProductID.Text)
+        Dim ProductPath As String = ConfigurationManager.AppSettings("ProductImagePath")
+
+        ProductTable = ProductAdaptor.GetDataByID(ProductID)
+        If ProductTable.Rows.Count > 0 Then
+            ProductRow = ProductTable.Rows(0)
+            With ProductRow
+                lblProductName.Text = .Name
+                ProductAdminControl1.CategoryID = .Category_id
+            End With
+
+            ImageTable = ImageAdaptor.GetDataByProductID(ProductID)
+            ProductAdminControl1.ProductID = Convert.ToInt32(lblProductID.Text)
+            For Each ImageRow In ImageTable.Rows
+                With ImageRow
+                    Select Case .position
+                        Case 1
+                            Image1.ImageUrl = Path.Combine(ProductPath, .ImageUrl)
+                        Case 2
+                            Image2.ImageUrl = Path.Combine(ProductPath, .ImageUrl)
+                        Case 3
+                            Image3.ImageUrl = Path.Combine(ProductPath, .ImageUrl)
+                    End Select
+                End With
+            Next
+        End If
+    End Sub
+
+    Protected Sub SaveData()
+
+    End Sub
+
+    Protected Sub RemoveImage(ByVal ImagePosition As Integer)
+        Dim ImageAdaptor As New ProductDataSetTableAdapters.ProductImageTableAdapter()
+        ImageAdaptor.DeleteQuery(Convert.ToInt32(lblProductID.Text), ImagePosition)
+
+        Dim Filename As String = lblProductID.Text & "_" & ImagePosition & ".jpg"
+        Dim FilePath As String = Server.MapPath(Path.Combine(ConfigurationManager.AppSettings("ProductImagePath"), Filename))
+        File.Delete(FilePath)
+    End Sub
+
+    Protected Sub SaveImage(ByVal ImageControl As WebControls.Image, ByVal ImagePosition As Integer)
+        Dim ImageName As String = Path.Combine(ConfigurationManager.AppSettings("UploadPath"), Session("WorkingImage"))
+        Dim ProductPath, Filename As String
+        Dim w1 As Integer = Convert.ToInt32(W.Value)
+        Dim h1 As Integer = Convert.ToInt32(H.Value)
+        Dim x1 As Integer = Convert.ToInt32(X.Value)
+        Dim y1 As Integer = Convert.ToInt32(Y.Value)
+
+        Dim w0 As Integer = Convert.ToInt32(hfdPreviewWidth.Value)
+        Dim h0 As Integer = Convert.ToInt32(hfdPreviewHeight.Value)
+
+
+        Dim oImg As Bitmap = Bitmap.FromFile(Server.MapPath(ImageName))
+        Dim img As Image = ImageClass.Crop(oImg, w1, h1, x1, y1)
+        img = ImageClass.ResizeImage(img, New Size(w0, h0))
+
+        Filename = lblProductID.Text & "_" & ImagePosition & ".jpg"
+        ProductPath = Path.Combine(ConfigurationManager.AppSettings("ProductImagePath"), Filename)
+        img.Save(Server.MapPath(ProductPath), Imaging.ImageFormat.Jpeg)
+        ImageControl.ImageUrl = ProductPath & "?" & Now.Ticks
+
+        If ImagePosition = 1 Then
+            img = ImageClass.ResizeImage(img, New Size(100, 75))
+            Dim Filename2 As String = lblProductID.Text & ".jpg"
+            ProductPath = Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), Filename2)
+            img.Save(Server.MapPath(ProductPath), Imaging.ImageFormat.Jpeg)
+        End If
+
+        ' Save to DB
+        Dim ImageAdaptor As New ProductDataSetTableAdapters.ProductImageTableAdapter()
+        Dim ProductID As Integer = Convert.ToInt32(lblProductID.Text)
+        ImageAdaptor.Insert(ProductID, ImagePosition, Filename)
+    End Sub
+
+    Protected Sub UploadImage(ByVal FileUploadControl As FileUpload)
+        Dim UploadPath As String = ConfigurationManager.AppSettings("UploadPath")
+        Dim FilePath As String = ""
+        Dim FileOK As Boolean = False
+        Dim FileSaved As Boolean = False
+
+        If FileUploadControl.HasFile Then
+            Session("WorkingImage") = FileUploadControl.FileName
+            Dim FileExtension As String = Path.GetExtension(Session("WorkingImage")).ToLower()
+            Select Case FileExtension
+                Case ".jpg", ".jpeg", ".png", ".gif", ".bmp"
+                    FileOK = True
+            End Select
+        End If
+
+        If FileOK Then
+            Try
+                FilePath = Path.Combine(UploadPath, Session("WorkingImage"))
+                FileUploadControl.SaveAs(Server.MapPath(FilePath))
+                FileSaved = True
+            Catch ex As Exception
+                lblMessage.Text = "File could not be uploaded. " & ex.Message
+                FileSaved = False
+            End Try
+        Else
+            lblMessage.Text = "Accept only image file"
+        End If
+
+        If FileSaved Then
+            ShowPanel(2)
+            imgCrop.ImageUrl = FilePath
+            imgPreview.ImageUrl = FilePath
+        End If
+    End Sub
+
+    Protected Sub btnUpload1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload1.Click
+        With pnlPreview
+            .Width = 360
+            .Height = 270
+        End With
+        hfdPreviewWidth.Value = 360
+        hfdPreviewHeight.Value = 270
+        ViewState("ImageNumber") = 1
+        UploadImage(FileUpload1)
+    End Sub
+
+    Protected Sub btnUpload2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload2.Click
+        With pnlPreview
+            .Width = 180
+            .Height = 135
+        End With
+        hfdPreviewWidth.Value = 180
+        hfdPreviewHeight.Value = 135
+        ViewState("ImageNumber") = 2
+        UploadImage(FileUpload2)
+    End Sub
+
+    Protected Sub btnUpload3_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnUpload3.Click
+        With pnlPreview
+            .Width = 180
+            .Height = 135
+        End With
+        hfdPreviewWidth.Value = 180
+        hfdPreviewHeight.Value = 135
+        ViewState("ImageNumber") = 3
+        UploadImage(FileUpload3)
+    End Sub
+
+    Protected Sub btnSave_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSave.Click
+        Try
+            Select Case ViewState("ImageNumber")
+                Case 1
+                    SaveImage(Image1, 1)
+                Case 2
+                    SaveImage(Image2, 2)
+                Case 3
+                    SaveImage(Image3, 3)
+            End Select
+            ShowPanel(1)
+        Catch ex As Exception
+            lblMessage2.Text = ex.Message
+        End Try
+    End Sub
+
+    Protected Sub btnRemove1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnRemove1.Click
+        Try
+            RemoveImage(1)
+            Image1.ImageUrl = "~/images/spacer.gif"
+        Catch ex As Exception
+            lblMessage.Text = ex.Message
+        End Try
+    End Sub
+
+    Protected Sub btnRemove2_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnRemove2.Click
+        Try
+            RemoveImage(2)
+            Image2.ImageUrl = "~/images/spacer.gif"
+        Catch ex As Exception
+            lblMessage.Text = ex.Message
+        End Try
+    End Sub
+
+    Protected Sub btnRemove3_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnRemove3.Click
+        Try
+            RemoveImage(3)
+            Image3.ImageUrl = "~/images/spacer.gif"
+        Catch ex As Exception
+            lblMessage.Text = ex.Message
+        End Try
+    End Sub
+End Class

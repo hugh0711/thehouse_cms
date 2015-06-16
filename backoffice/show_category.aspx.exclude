@@ -1,0 +1,135 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPage.master" AutoEventWireup="false" CodeFile="show_category.aspx.vb" Inherits="show_category" %>
+
+<%@ Register src="control/CategoryPathControl.ascx" tagname="CategoryPathControl" tagprefix="uc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <div style="min-height:250px;">
+    <asp:UpdatePanel runat="server" ID="UpdatePanel1">
+        <ContentTemplate>
+        <uc1:CategoryPathControl ID="CategoryPathControl1" runat="server"  />
+        <asp:HiddenField runat="server" ID="hfdCategoryID" />
+		<asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+            ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+            
+                SelectCommand="SELECT CategoryID, SortOrder, CategoryName, Url FROM view_Category WHERE (Enabled = @Enabled) AND (Lang = @Lang) AND (ParentID = @ParentID) ORDER BY SortOrder">
+            <SelectParameters>
+                <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                <asp:SessionParameter DefaultValue="zh-hk" Name="Lang" SessionField="MyCulture" 
+                    Type="String" />
+                <asp:ControlParameter ControlID="hfdCategoryID" Name="ParentID" 
+                    PropertyName="Value" Type="Int32" />
+            </SelectParameters>
+        </asp:SqlDataSource>
+		    
+		    <asp:ListView runat="server" ID="lvwCategory" DataSourceID="SqlDataSource1" GroupItemCount="5">
+		        <LayoutTemplate>
+		            <table border="0" align="center" width="100%">
+		                <tr>
+		                    <td>
+		                        <asp:PlaceHolder runat="server" ID="GroupPlaceHolder"></asp:PlaceHolder>
+		            		</td>
+		                </tr>
+		            </table>
+
+		        </LayoutTemplate>
+		        <GroupTemplate>
+		            <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+		        </GroupTemplate>
+		        <GroupSeparatorTemplate>
+        			<div style="clear: both"></div>
+		        </GroupSeparatorTemplate>
+		        <ItemTemplate>
+				<div class="contentBox_content_floatleft_show">
+				    <table border="0" width="132">
+				        <tr>
+				            <td align="center" valign="middle" style="background:url(images/cat_frame.jpg) no-repeat left top; height: 148px; width:142px;">
+				                <%--<asp:ImageButton runat="server" ID="btnCategory" ImageUrl='<%# String.Format("~/product_image/category/{0}.jpg", Eval("CategoryID")) %>' CommandArgument='<%# Eval("CategoryID") %>' OnClick="btnCategory_Click" />--%>
+				                <asp:HyperLink runat="server" ImageUrl='<%# IO.Path.Combine(ConfigurationManager.AppSettings("CategoryImagePath"), Eval("Url")) %>' NavigateUrl='<%# String.Format("~/showroom.aspx?id={0}", Eval("CategoryID")) %>'></asp:HyperLink>
+				            </td>
+				        </tr>
+				        <tr>
+				            <td align="center" valign="middle">
+				                <asp:HyperLink ID="HyperLink1" runat="server" Text='<%# Eval("CategoryName") %>' NavigateUrl='<%# String.Format("~/showroom.aspx?id={0}", Eval("CategoryID")) %>'></asp:HyperLink>
+				            </td>
+				        </tr>
+				    </table>
+				</div>
+		        </ItemTemplate>
+		    </asp:ListView>
+
+        <%-- Product List  --%>
+		<asp:SqlDataSource ID="SqlDataSource2" runat="server" 
+            ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+            SelectCommand="SELECT [ProductID], [SortOrder], [ProductName] FROM [view_Product] WHERE (([Enabled] = @Enabled) AND ([Lang] = @Lang) AND ([CategoryID] = @CategoryID)) ORDER BY [SortOrder]">
+            <SelectParameters>
+                <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                <asp:SessionParameter DefaultValue="zh-hk" Name="Lang" SessionField="MyCulture" Type="String" />
+                <asp:ControlParameter ControlID="hfdCategoryID" Name="CategoryID" 
+                    PropertyName="Value" Type="Int32" />
+            </SelectParameters>
+        </asp:SqlDataSource>
+		    
+		    <asp:ListView runat="server" ID="ListView1" DataSourceID="SqlDataSource2" GroupItemCount="5">
+		        <LayoutTemplate>
+		            <table border="0" align="center" width="100%">
+		                <tr>
+		                    <td>
+		                        <asp:PlaceHolder runat="server" ID="GroupPlaceHolder"></asp:PlaceHolder>
+		            		</td>
+		                </tr>
+		            </table>
+                    <table border="0" align="center" width="100%">
+                        <tr>
+                            <td>
+                                <asp:DataPager ID="DataPager1" runat="server" PagedControlID="ListView1" PageSize="20">
+                                <Fields>
+                                    <asp:NextPreviousPagerField ButtonType="Button" ShowFirstPageButton="True"
+                                    ShowNextPageButton="False" ShowPreviousPageButton="True" />
+                                    <asp:NumericPagerField />
+                                    <asp:NextPreviousPagerField ButtonType="Button" ShowLastPageButton="True"
+                                    ShowNextPageButton="True" ShowPreviousPageButton="False" />
+                                </Fields>
+                                </asp:DataPager> 
+                            </td>
+                        </tr>
+                    </table>
+		        </LayoutTemplate>
+		        <GroupTemplate>
+		            <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+		        </GroupTemplate>
+		        <GroupSeparatorTemplate>
+        			<div style="clear: both"></div>
+		        </GroupSeparatorTemplate>
+		        <ItemTemplate>
+				<div class="contentBox_content_floatleft_show">
+				    <table border="0" width="132">
+				        <tr>
+				            <td align="center" valign="middle" style="background:url(images/cat_frame.jpg) no-repeat left top; height: 148px; width:142px;">
+				                <%--<asp:ImageButton runat="server" ID="btnCategory" ImageUrl='<%# String.Format("~/product_image/category/{0}.jpg", Eval("CategoryID")) %>' CommandArgument='<%# Eval("CategoryID") %>' OnClick="btnCategory_Click" />--%>
+				                <asp:HyperLink ID="HyperLink2" runat="server" ImageUrl='<%# GetProductThumbnail(Eval("ProductID")) %>' NavigateUrl='<%# String.Format("~/product.aspx?id={0}", Eval("ProductID")) %>'></asp:HyperLink>
+				            </td>
+				        </tr>
+				        <tr>
+				            <td align="center" valign="middle">
+				                <asp:HyperLink ID="HyperLink1" runat="server" Text='<%# Eval("ProductName") %>' NavigateUrl='<%# String.Format("~/product.aspx?id={0}", Eval("ProductID")) %>'></asp:HyperLink>
+				            </td>
+				        </tr>
+				    </table>
+				</div>
+		        </ItemTemplate>
+		    </asp:ListView>
+
+        
+        </ContentTemplate>
+    </asp:UpdatePanel>
+			
+    </div>			
+    <div>
+        <br />
+        <%--<asp:HyperLink runat="server" ID="lnkQuotation" Text="查詢我們" NavigateUrl="~/quotation.aspx"></asp:HyperLink>--%>
+        <asp:Button runat="server" ID="btnQuotation" Text="查詢我們" />
+    </div>
+</asp:Content>
+

@@ -1,0 +1,308 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPage.master" AutoEventWireup="false" CodeFile="Default.aspx.vb" Inherits="_Default" %>
+
+<%@ Register src="control/ChannelControl.ascx" tagname="ChannelControl" tagprefix="uc1" %>
+
+<%@ Register src="control/CalendarControl.ascx" tagname="CalendarControl" tagprefix="uc2" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <link href="js/nivo-slider/themes/default/default.css" rel="stylesheet" type="text/css" />
+	<%--<link href="js/nivo-slider/themes/pascal/pascal.css" rel="stylesheet" type="text/css" />--%>
+	<%--<link href="js/nivo-slider/themes/orman/orman.css" rel="stylesheet" type="text/css" />--%>
+	<link href="js/nivo-slider/nivo-slider.css" rel="stylesheet" type="text/css" />
+	<script src="js/nivo-slider/jquery.nivo.slider.pack.js" type="text/javascript"></script>
+    <%--<script type="text/javascript" src="js/jquery.betterTooltip.js"></script>--%>
+
+	<script type="text/javascript">
+	    var timerNews, timerBanner;
+
+	    $(document).ready(function () {
+	        $('#slider').nivoSlider({directionNavHide: false});
+	        //$(".tTip").betterTooltip({ speed: 150, delay: 300 });
+
+	        /*
+	        var space = $("#button-wrapper div.space:first").width();
+	        var w0 = $("#button-wrapper").width();
+	        var w = (w0 + space) / $("#button-wrapper a").length - space;
+	        $("#button-wrapper a").width(w);
+	        */
+	        $("#news-banner-wrapper .panel:last").addClass("active");
+	        $("#news-banner-wrapper .tb:last").addClass("active");
+	        $("#news-banner-wrapper .tb").bind("click", function () {
+	            var prev = $("#news-banner-wrapper .panel.active");
+	            var prev_btn = $("#news-banner-wrapper .tb.active");
+	            var next_btn = $(this);
+	            var index = $("#news-banner-wrapper .tb").index(this);
+	            var next = $("#news-banner-wrapper .panel").get(index);
+	            transitNews(prev, prev_btn, next, next_btn);
+	            return false;
+	        });
+	        rotateNewsBanner();
+
+            /*
+	        $("#banner-wrapper div.image:last").addClass("active");
+	        $("#button-wrapper a:last").addClass("active");
+	        $("#button-wrapper a").bind("click", function () {
+	            alert("hi");
+	            var prev = $("#banner-wrapper div.active");
+	            var prev_btn = $("#button-wrapper a.active");
+	            var next_btn = $(this);
+	            var index = $("#button-wrapper a").index(this);
+	            var next = $("#banner-wrapper div").get(index);
+	            transit(prev, prev_btn, next, next_btn);
+	            return false;
+	        });
+	        rotateBanner();
+            */
+	    });
+
+	    function rotateBanner() {
+	        var prev = $("#banner-wrapper div.active");
+	        var prev_btn = $("#button-wrapper a.active");
+	        var next, next_btn;
+	        if ($(prev).next().length == 0) {
+	            next = $("#banner-wrapper div.image:first");
+	            next_btn = $("#button-wrapper a:first");
+	        } else {
+	            next = $(prev).next();
+	            next_btn = $(prev_btn).nextAll("a:first");
+	        }
+	        transitBanner(prev, prev_btn, next, next_btn);
+	    }
+
+	    function transitBanner(prev, prev_btn, next, next_btn) {
+	        clearTimeout(timerBanner);
+	        $("#banner-wrapper div.image").css("z-index", 1);
+	        $(prev).css({
+	            "z-index": 5
+	        }).removeClass("active");
+	        $(next).css({
+	            "left": $(next).width() + "px",
+	            "z-index": 10
+	        }).addClass("active").animate({ "left": "0px" });
+	        $(prev_btn).removeClass("active");
+	        $(next_btn).addClass("active");
+	        timerBanner = setTimeout("rotateBanner()", 5000);
+	    }
+
+	    function rotateNewsBanner() {
+	        var prev = $("#news-banner-wrapper .panel.active");
+	        var prev_btn = $("#news-banner-wrapper .tb.active");
+	        var next, next_btn;
+	        if ($(prev).next().length == 0) {
+	            next = $("#news-banner-wrapper .panel:first");
+	            next_btn = $("#news-banner-wrapper .tb:first");
+	        } else {
+	            next = $(prev).next();
+	            next_btn = $(prev_btn).nextAll(".tb:first");
+	        }
+	        transitNews(prev, prev_btn, next, next_btn);
+	    }
+
+	    function transitNews(prev, prev_btn, next, next_btn) {
+	        clearTimeout(timerNews);
+	        $("#news-banner-wrapper .panel").css("z-index", 1);
+	        $(prev).css({
+	            "z-index": 5
+	        }).removeClass("active");
+	        $(next).css({
+	            "left": $(next).width() + "px",
+	            "z-index": 10
+	        }).addClass("active").animate({ "left": "0px" });
+	        $(prev_btn).removeClass("active");
+	        $(next_btn).addClass("active");
+	        timerNews = setTimeout("rotateNewsBanner()", 6000);
+	    }
+	</script>
+	<style type="text/css">
+	#slider {
+        margin:0px auto 32px auto;
+        width:894px; /* Make sure your images are the same size */
+        height:350px; /* Make sure your images are the same size */
+    }
+   .slider-wrapper { height:350px; overflow:hidden; }
+    .theme-default .nivo-controlNav { top:330px; }
+    .theme-default a.nivo-prevNav { left:-32px; }
+    .theme-default a.nivo-nextNav { right:-32px; }
+	</style>
+</asp:Content>
+
+
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+    <asp:HiddenField runat="server" ID="hfdVideoFunctionID" />
+    <asp:HiddenField runat="server" ID="hfdNewsFunctionID" />
+    <asp:HiddenField runat="server" ID="hfdMainBannerPromoID" />
+
+
+    <div id="content-banner" class="theme-default slider-wrapper">
+        <%--<div class="section-title">Review <span class="section-title-quot">&raquo;</span></div>--%>
+		<div id="slider" class="nivoSlider">
+            <asp:SqlDataSource runat="server" ID="dsBanner" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                SelectCommand="SELECT [PromoID], PromoUrl, PromoSingleImageUrl, UnitFunctionID FROM [view_Promo] WHERE (([PromoSettingID] = @PromoSettingID) AND ([Enabled] = @Enabled) AND (Lang = @Lang)) AND (StartDate <= GetDate() AND GetDate() <= DATEADD(day, 1, EndDate)) ORDER BY [SortOrder]">
+            <SelectParameters>
+                <asp:ControlParameter ControlID="hfdMainBannerPromoID" Name="PromoSettingID" 
+                    PropertyName="Value" Type="Int32" />
+                <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                <asp:SessionParameter Name="Lang" Type="String" SessionField="MyCulture" />
+            </SelectParameters>
+            </asp:SqlDataSource>
+            <asp:Repeater runat="server" ID="lvwBanner" DataSourceID="dsBanner">
+                <ItemTemplate>
+                    <div class="image">
+                        <asp:Hyperlink ID="Hyperlink1" runat="server" NavigateUrl='<%# Utility.GetNavigateUrl(Eval("UnitFunctionID"), Eval("PromoUrl")) %>'
+                                        ImageUrl='<%# IO.Path.Combine(ConfigurationManager.AppSettings("PromoImagePath"), Eval("PromoSingleImageUrl")) %>'></asp:Hyperlink>
+                    </div>
+                </ItemTemplate>
+            </asp:Repeater>
+        </div>
+    </div>
+    <div id="content-left">      
+    
+            <div class="section-title">最新消息</div>
+            <div id="news-banner-wrapper">
+                <div class="left-panel">
+                    <asp:Repeater ID="Repeater1" runat="server" DataSourceID="dsNews">
+                        <ItemTemplate>
+                            <div class="panel">
+                                <div class="image-frame">
+                                <asp:HyperLink ID="HyperLink2" runat="server" CssClass="image" NavigateUrl='<%# String.Format("~/news.aspx?id={0}", Eval("ProductID")) %>' ImageUrl='<%# String.Format("{1}{0}.jpg", Eval("ProductID"), ConfigurationManager.AppSettings("ProductImagePath"))  %>' />
+                                </div>
+                                <asp:HyperLink ID="HyperLink3" runat="server" CssClass="title" NavigateUrl='<%# String.Format("~/news.aspx?id={0}", Eval("ProductID")) %>' Text='<%# Eval("ProductName") %>'></asp:HyperLink>
+                                <asp:Label runat="server" CssClass="date" Text='<%# Utility.GetTime(Eval("ModifyDate")) %>'></asp:Label>
+                                <asp:Label runat="server" CssClass="desc" Text='<%# Eval("Description") %>'></asp:Label>
+                                <asp:HyperLink ID="HyperLink4" runat="server" CssClass="more" NavigateUrl='<%# String.Format("~/news.aspx?id={0}", Eval("ProductID")) %>' ImageUrl="~/images/more_white.png"></asp:HyperLink>
+                                <%--<p><asp:Literal runat="server" Text='<%# Utility.TrimHTML(Eval("Description"), 100) %>'></asp:Literal></p>--%>
+                            </div>
+                        </ItemTemplate>
+                    </asp:Repeater>
+
+                </div>
+                <div class="right-panel">
+                    <asp:Repeater ID="Repeater2" runat="server" DataSourceID="dsNews">
+                        <ItemTemplate>
+                            <asp:Image runat="server" CssClass="tb" ImageUrl='<%# String.Format("{1}{0}.jpg", Eval("ProductID"), ConfigurationManager.AppSettings("ProductThumbnailPath")) %>' data-id='<%# Eval("ProductID") %>' />
+                        </ItemTemplate>
+                    </asp:Repeater>
+                </div>
+            </div>
+            <asp:SqlDataSource 
+                    ID="dsNews" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                    
+                SelectCommand="SELECT Top 5 ProductID, Description, ProductName, ModifyDate FROM view_ProductImage WHERE (Lang = @Lang) AND (FunctionID = @FunctionID) ORDER BY SellingStartDate DESC">
+                <SelectParameters>
+                    <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+                    <asp:ControlParameter Name="FunctionID" Type="Int32" ControlID="hfdNewsFunctionID" PropertyName="Value" />
+                </SelectParameters>
+            </asp:SqlDataSource>
+              
+        <div id="content-left-left">
+            <div class="section-title">最多瀏覽</div>
+            <asp:SqlDataSource runat="server" ID="dsTopView" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                
+                SelectCommand="SELECT Top 5 [ProductID], [ProductName], [Description], [MOQUnit] FROM [view_ProductImageCount] WHERE (([FunctionID] = @FunctionID) AND ([Enabled] = @Enabled)) ORDER BY ViewCount DESC, LastView DESC">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="hfdVideoFunctionID" Name="FunctionID" 
+                        PropertyName="Value" Type="Int32" />
+                    <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                </SelectParameters>
+            </asp:SqlDataSource>
+            <asp:ListView runat="server" ID="ListView1" DataSourceID="dsTopView">
+                <LayoutTemplate>
+                    <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+                </LayoutTemplate>
+                <ItemTemplate>
+                    <div class="news-story">
+                        <asp:HyperLink ID="Image1" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>'
+                            ImageUrl='<%# VideoClass.GetHQPreview(Eval("MOQUnit")) %>' CssClass="tb2" />
+                        <%--<asp:Image ID="Image1" runat="server" ImageUrl='<%# IO.Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), String.Format("{0}.jpg", Eval("ProductID"))) %>' />--%>
+                         <asp:HyperLink ID="HyperLink5"  runat="server" CssClass="title" Text='<%# Eval("ProductName") %>' NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>'></asp:HyperLink>
+                        <p class="desc"><asp:Label runat="server" Text='<%# Utility.TrimHTML(Eval("Description"), 100) %>'></asp:Label></p>
+                        <asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>' CssClass="more" ImageUrl="~/images/more_blue.png"></asp:HyperLink>
+                    </div>
+                </ItemTemplate>
+            </asp:ListView>
+
+    
+        </div>
+
+        <div id="content-left-right">
+            <div class="section-title"><asp:Literal runat="server" ID="lblTag1"></asp:Literal></div>
+            <asp:HiddenField runat="server" ID="hfdTagID1" />
+            <asp:SqlDataSource runat="server" ID="dsFeature" 
+                ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                
+                
+                SelectCommand="SELECT Top 5 [ProductID], [ProductName], [Description], [MOQUnit] FROM [view_ProductImageTag] WHERE (([FunctionID] = @FunctionID) AND ([Enabled] = @Enabled)) AND TagID = @TagID AND (GETDATE() >= SellingStartDate) ORDER BY [ModifyDate] DESC">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="hfdVideoFunctionID" Name="FunctionID" PropertyName="Value" Type="Int32" />
+                    <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                    <asp:ControlParameter ControlID="hfdTagID1" Name="TagID" PropertyName="Value" Type="Int32" />
+                </SelectParameters>
+            </asp:SqlDataSource>
+            <asp:ListView runat="server" ID="lvwFeature" DataSourceID="dsFeature">
+                <LayoutTemplate>
+                    <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+                </LayoutTemplate>
+                <ItemTemplate>
+                    <div class="news-story">
+                        <asp:HyperLink ID="Image1" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>'
+                            ImageUrl='<%# VideoClass.GetHQPreview(Eval("MOQUnit")) %>' CssClass="tb2" />
+                        <%--<asp:Image ID="Image1" runat="server" ImageUrl='<%# IO.Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), String.Format("{0}.jpg", Eval("ProductID"))) %>' />--%>
+                         <asp:HyperLink  runat="server" CssClass="title" Text='<%# Eval("ProductName") %>' NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>'></asp:HyperLink>
+                        <p class="desc"><asp:Label runat="server" Text='<%# Utility.TrimHTML(Eval("Description"), 100) %>'></asp:Label></p>
+                        <asp:HyperLink ID="HyperLink6" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>' CssClass="more" ImageUrl="~/images/more_blue.png"></asp:HyperLink>
+                    </div>
+                </ItemTemplate>
+            </asp:ListView>
+        </div>
+    </div>
+    <div id="content-right">
+
+            <div class="section-title">分類廣告</div>
+            <script type="text/javascript"><!--
+                google_ad_client = "ca-pub-7644686126954040";
+                /* MajiTV Home */
+                google_ad_slot = "6987701695";
+                google_ad_width = 300;
+                google_ad_height = 250;
+            //-->
+            </script>
+            <script type="text/javascript"
+            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+
+            <div class="section-title">Maji焦點</div>
+
+            <uc2:CalendarControl ID="CalendarControl1" runat="server" />
+
+            <div>&nbsp;</div>
+
+            <div class="section-title">分類廣告</div>
+            <asp:PlaceHolder runat="server" Visible="false">
+            <asp:HyperLink runat="server" ID="lnkAd"></asp:HyperLink>
+            </asp:PlaceHolder>
+            <script type="text/javascript"><!--
+            google_ad_client = "ca-pub-7644686126954040";
+            /* MajiTV Home */
+            google_ad_slot = "6987701695";
+            google_ad_width = 300;
+            google_ad_height = 250;
+            //-->
+            </script>
+            <script type="text/javascript"
+            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+
+
+            <%--<div class="news-story3">
+                <asp:Image ID="Image2" runat="server" ImageUrl="~/images/banner_04.png" />
+            </div>--%>
+    </div>
+    <div class="clear"></div>
+
+</asp:Content>
+

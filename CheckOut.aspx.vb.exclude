@@ -1,0 +1,164 @@
+﻿Imports Utility
+Imports System.Threading
+Imports System.Globalization
+
+Partial Class CheckOut
+    Inherits System.Web.UI.Page
+
+	Protected Overloads Sub InitializeCulture()
+		Thread.CurrentThread.CurrentUICulture = New CultureInfo(Session("MyCulture").ToString())
+		MyBase.InitializeCulture()
+	End Sub
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		If Not IsPostBack Then
+			Bind()
+		End If
+	End Sub
+
+	Protected Sub Page_PreRenderComplete(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRenderComplete
+		PaymentMethodChanged()
+	End Sub
+
+	Protected Sub Bind()
+		pnlFormInput.Visible = True
+		pnlShoppingCart.Visible = False
+		pnlFormDisplay.Visible = False
+		ViewState("PaymentDescription") = (New PaymentMethodDataSetTableAdapters.view_PaymentMethodTableAdapter).GetData
+		radPaymentMethod.SelectedValue = 1
+		radCountry.SelectedIndex = 0
+
+		If Membership.GetUser IsNot Nothing Then
+			Dim r As MemberDetailDataSet.MemberDetailRow
+			Dim t As New MemberDetailDataSet.MemberDetailDataTable
+			t = (New MemberDetailDataSetTableAdapters.MemberDetailTableAdapter).GetDataByUserID(Membership.GetUser.UserName)
+			If t.Rows.Count > 0 Then
+				r = t.Rows(0)
+				txtCustomerName.Text = r.Name
+				txtContactPhone.Text = r.ContactNo
+				txtDeliveryAddress.Text = r.DeliveryAddress
+				txtEmail.Text = r.Email
+				radCountry.SelectedValue = r.Country
+			End If
+		End If
+	End Sub
+
+	Protected Sub btnConfirm_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnConfirm.Click
+		Dim ShipInfo As New ShipInfoClass
+		With ShipInfo
+			.CustomerName = txtCustomerName.Text
+			.ContactPhone = txtContactPhone.Text
+			.DeliveryAddress = txtDeliveryAddress.Text
+			.Country = radCountry.SelectedValue
+			.Email = txtEmail.Text
+			.Remark = txtRemark.Text
+			.PaymentMethod = radPaymentMethod.SelectedValue
+			.DeliveryMethod = 0
+		End With
+
+		Dim Order As New OrderClass
+		Dim OrderNumber As String = ""
+		OrderNumber = Order.InsertOrder(ShipInfo)
+
+		'Send Order Mail
+		Dim email As New EmailClass
+		'email.SendOrderNotification(OrderNumber)
+
+		'Session("OrderNumber") = OrderNumber
+		'Session("TotalAmount") = GetShoppingCart.TotalAmount
+
+		Dim r As PaymentMethodDataSet.view_PaymentMethodRow
+		Dim t As New PaymentMethodDataSet.view_PaymentMethodDataTable
+		t = (New PaymentMethodDataSetTableAdapters.view_PaymentMethodTableAdapter).GetDataByPaymentMethodID(radPaymentMethod.SelectedValue, Utility.MyCulture)
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+			Response.Redirect(String.Format("{0}?OrderNumber={1}", r.PaymentPage, OrderNumber))
+		End If
+
+		Response.Redirect(String.Format("~/OrderComplete.aspx?OrderNumber={1}", OrderNumber))
+	End Sub
+
+	Protected Sub btnSubmit_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnSubmit.Click
+		Dim Carts As New DsCart
+		Carts.UpdateShippingFee(radCountry.SelectedValue)
+
+		gvShoppingCart.DataSource = GetShoppingCart()
+		gvShoppingCart.DataBind()
+		txtTotalAmount.Text = String.Format("HK${0:n2}", GetShoppingCart.TotalAmount)
+
+		txt2CustomerName.Text = txtCustomerName.Text
+		txt2ContactPhone.Text = txtContactPhone.Text
+		txt2DeliveryAddress.Text = Replace(txtDeliveryAddress.Text, vbCrLf, "<br />")
+		txt2Country.Text = radCountry.SelectedValue
+		txt2Email.Text = txtEmail.Text
+		txt2PaymentMethod.Text = radPaymentMethod.SelectedItem.Text
+		txt2Remark.Text = Replace(txtRemark.Text, vbCrLf, "<br />")
+		txt2TotalAmount.Text = String.Format("HK${0:n2}", GetShoppingCart.TotalAmount)
+
+		pnlFormInput.Visible = False
+		pnlShoppingCart.Visible = True
+		pnlFormDisplay.Visible = False
+	End Sub
+
+	Protected Sub btnBackInput_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBackInput.Click
+		Response.Redirect("~/ShoppingCart.aspx")
+	End Sub
+
+	Protected Sub btnBackDisplay_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBackDisplay.Click
+		pnlFormInput.Visible = True
+		pnlFormDisplay.Visible = False
+	End Sub
+
+	Protected Sub radPaymentMethod_SelectedIndexChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles radPaymentMethod.SelectedIndexChanged
+		'PaymentMethodChanged()
+	End Sub
+
+	Protected Sub PaymentMethodChanged()
+		Dim t As PaymentMethodDataSet.view_PaymentMethodDataTable = ViewState("PaymentDescription")
+		Dim r As PaymentMethodDataSet.view_PaymentMethodRow
+		If t.Rows.Count > 0 Then
+			For Each r In t.Rows
+				If r.PaymentMethodId = radPaymentMethod.SelectedValue Then
+					ltrPaymentMethod.Text = r.LangDescription
+					Exit For
+				End If
+			Next
+		End If
+	End Sub
+
+	Protected Function DisplayProductImage(ByVal ProductId As Integer) As String
+		Dim s As String = ""
+		Dim r As ProductDataSet.ProductImageRow
+		Dim t As New ProductDataSet.ProductImageDataTable
+		t = (New ProductDataSetTableAdapters.ProductImageTableAdapter).GetDataByProductID(ProductId)
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+			s = System.IO.Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), r.Url)
+		End If
+		Return s
+	End Function
+
+	Protected Function DisplayProductName(ByVal ProductId As Integer) As String
+		Dim s As String = ""
+		Dim r As ProductDataSet.view_ProductRow
+		Dim t As New ProductDataSet.view_ProductDataTable
+		t = (New ProductDataSetTableAdapters.view_ProductTableAdapter).GetDataByProductId(ProductId, MyCulture)
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+			s = r.ProductName
+		End If
+		Return s
+	End Function
+
+	Protected Sub btnCartBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCartBack.Click
+		pnlFormInput.Visible = True
+		pnlShoppingCart.Visible = False
+		pnlFormDisplay.Visible = False
+	End Sub
+
+	Protected Sub btnCartNext_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCartNext.Click
+		pnlFormInput.Visible = False
+		pnlShoppingCart.Visible = False
+		pnlFormDisplay.Visible = True
+	End Sub
+End Class

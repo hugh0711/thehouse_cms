@@ -1,0 +1,58 @@
+﻿
+Partial Class backoffice_product_name
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Request("id") IsNot Nothing Then
+                hfdProductID.Value = Request("id")
+                Bind()
+            End If
+        End If
+    End Sub
+
+    Protected Sub Bind()
+        GridView1.DataBind()
+    End Sub
+
+    Protected Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBack.Click
+        Response.Redirect("~/backoffice/product.aspx?id=" & hfdProductID.Value)
+    End Sub
+
+    Protected Sub btnTranslate_Click(ByVal sender As Object, ByVal e As System.EventArgs)
+        Try
+            Dim ProductAdapter As New ProductDataSetTableAdapters.ProductTableAdapter()
+            Dim ProductNameAdapter As New ProductDataSetTableAdapters.ProductNameTableAdapter()
+            Dim LanguageSupport() As String = ConfigurationManager.AppSettings("LanguageSupport").ToString().Split(",")
+            Dim ProductName As String
+            Dim Translate As New GoogleTranslateClass
+
+            Dim container As Control = CType(sender, Button).Parent()
+            Dim hfdProductNameID As HiddenField = CType(container.FindControl("hfdProductNameID"), HiddenField)
+            Dim hfdProductName As HiddenField = CType(container.FindControl("hfdProductName"), HiddenField)
+            Dim hfdLang As HiddenField = CType(container.FindControl("hfdLang"), HiddenField)
+
+            Dim Product As String = hfdProductName.Value
+            Dim Language As String = hfdLang.Value
+            Dim ProductID As Integer = CInt(hfdProductID.Value)
+
+            For Each ToLang In LanguageSupport
+                ProductName = Translate.Translate(Product, Language, ToLang)
+                If ProductNameAdapter.UpdateQuery(ProductName, ProductID, ToLang) = 0 Then
+                    ProductNameAdapter.Insert(ProductID, ToLang, ProductName)
+                End If
+
+                If ToLang = ConfigurationManager.AppSettings("DefaultLanguage") Then
+                    ProductAdapter.UpdateProduct(ProductName, ProductID)
+                End If
+            Next
+            Bind()
+            lblMessage.Text = "類別名稱已翻譯完成"
+            lblMessage.ForeColor = Drawing.Color.Black
+        Catch ex As Exception
+            lblMessage.Text = ex.Message
+            lblMessage.ForeColor = Drawing.Color.Red
+        End Try
+    End Sub
+
+End Class

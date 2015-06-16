@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ordesignerObjectsDiagram dslVersion="1.0.0.0" absoluteBounds="0, 0, 11, 8.5" name="CMS">
+  <DataContextMoniker Name="/CMSDataContext" />
+  <nestedChildShapes>
+    <classShape Id="e02060f7-7b49-4519-ae00-c93b403f800a" absoluteBounds="0.875, 0.625, 2, 3.1170068359375">
+      <DataClassMoniker Name="/CMSDataContext/Album" />
+      <nestedChildShapes>
+        <elementListCompartment Id="96cc96c0-fa57-41c5-a158-d1b972d5d9ff" absoluteBounds="0.89, 1.085, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="75c3df20-6955-42f1-a589-660300c455db" absoluteBounds="5.125, 0.75, 2, 2.5401025390625">
+      <DataClassMoniker Name="/CMSDataContext/AlbumPhoto" />
+      <nestedChildShapes>
+        <elementListCompartment Id="ee89147e-51ed-4ba4-8504-35d4ca3cc659" absoluteBounds="5.14, 1.21, 1.9700000000000002, 1.9801025390625" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(2.875 : 2.02005126953125); (5.125 : 2.02005126953125)]" fixedFrom="Algorithm" fixedTo="Algorithm">
+      <AssociationMoniker Name="/CMSDataContext/Album/Album_AlbumPhoto" />
+      <nodes>
+        <classShapeMoniker Id="e02060f7-7b49-4519-ae00-c93b403f800a" />
+        <classShapeMoniker Id="75c3df20-6955-42f1-a589-660300c455db" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="6304227b-751d-498f-abf3-e0c3cd949554" absoluteBounds="0.875, 4, 2, 1.1939925130208333">
+      <DataClassMoniker Name="/CMSDataContext/AlbumCategory" />
+      <nestedChildShapes>
+        <elementListCompartment Id="f34c5b30-9b80-4f49-bbc8-99bcf783cf77" absoluteBounds="0.88999999999999968, 4.46, 1.9700000000000002, 0.63399251302083326" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="b276a78e-4828-4fad-97b3-8c46520289b3" absoluteBounds="5.25, 3.75, 2, 3.1170068359375">
+      <DataClassMoniker Name="/CMSDataContext/AlbumPhoto_info" />
+      <nestedChildShapes>
+        <elementListCompartment Id="309dbe4a-c917-44ee-825d-331bfaa459ab" absoluteBounds="5.2650000000000006, 4.21, 1.9700000000000002, 2.5570068359375" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <associationConnector edgePoints="[(6.1875 : 3.2901025390625); (6.1875 : 3.75)]" fixedFrom="NotFixed" fixedTo="NotFixed">
+      <AssociationMoniker Name="/CMSDataContext/AlbumPhoto/AlbumPhoto_AlbumPhoto_info" />
+      <nodes>
+        <classShapeMoniker Id="75c3df20-6955-42f1-a589-660300c455db" />
+        <classShapeMoniker Id="b276a78e-4828-4fad-97b3-8c46520289b3" />
+      </nodes>
+    </associationConnector>
+    <classShape Id="2d3653b2-79c6-4fd0-8bc7-20f1ee2774cb" absoluteBounds="8, 0.875, 2, 4.4631168619791666">
+      <DataClassMoniker Name="/CMSDataContext/view_AlbumPhotoInfo" />
+      <nestedChildShapes>
+        <elementListCompartment Id="cc4fe2cb-7a67-479b-873e-4e491d0ab711" absoluteBounds="8.015, 1.335, 1.9700000000000002, 3.903116861979167" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+    <classShape Id="491330fb-9d89-4768-8ffc-25fb9892f050" absoluteBounds="3.125, 3.375, 2, 3.6939111328124996">
+      <DataClassMoniker Name="/CMSDataContext/Promo" />
+      <nestedChildShapes>
+        <elementListCompartment Id="4d9490bb-d599-4179-bb4c-127a484dd9ab" absoluteBounds="3.14, 3.835, 1.9700000000000002, 3.1339111328125" name="DataPropertiesCompartment" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </classShape>
+  </nestedChildShapes>
+</ordesignerObjectsDiagram>

@@ -1,0 +1,45 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPageInner.master" AutoEventWireup="false" CodeFile="channel.aspx.vb" Inherits="channel" %>
+
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+        <div class="section-title">
+            <%--<span class="section-title-quot">&raquo;</span>--%>
+            <asp:Literal runat="server" ID="txtChannel" Text="Channel"></asp:Literal> 
+        </div>
+        <div class="section-desc article">
+            <asp:Literal runat="server" ID="lblDesc">
+            </asp:Literal>
+        </div>
+            <asp:HiddenField runat="server" id="hfdChannelID" />
+            <asp:SqlDataSource ID="dsChannel" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                    
+                SelectCommand="SELECT [CategoryID], [CategoryName], [Description] FROM [view_Category] WHERE (([Enabled] = @Enabled) AND ([ParentID] = @ParentID) AND ([Lang] = @Lang)) ORDER BY [SortOrder]">
+                <SelectParameters>
+                    <asp:ControlParameter ControlID="hfdChannelID" Name="ParentID" 
+                        PropertyName="Value" Type="Int32" />
+                    <asp:Parameter DefaultValue="true" Name="Enabled" Type="Boolean" />
+                    <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+                </SelectParameters>
+                </asp:SqlDataSource>
+                <asp:Repeater ID="Repeater1" runat="server" DataSourceID="dsChannel">
+                    <ItemTemplate>
+                        <div class="program">
+                        <asp:HyperLink ID="Image1" runat="server" NavigateUrl='<%# String.Format("~/program.aspx?id={0}", Eval("CategoryID")) %>'
+                                     ImageUrl='<%# IO.Path.Combine(ConfigurationManager.AppSettings("CategoryThumbnailPath"), String.Format("{0}.jpg", Eval("CategoryID"))) %>' 
+                                     Visible='<%# IsShowThumbnail(Eval("CategoryID")) %>'  CssClass="tb" />
+                        <div class="title"><asp:Literal ID="Literal1" runat="server" Text='<%# Eval("CategoryName") %>'></asp:Literal></div>
+                        <p><asp:Literal ID="Literal2" runat="server" Text='<%# Utility.TrimHTML(Eval("Description"), 200) %>'></asp:Literal></p>
+                        <asp:HyperLink runat="server" Text="View Programs" NavigateUrl='<%# String.Format("~/program.aspx?id={0}", Eval("CategoryID")) %>'></asp:HyperLink>
+                        </div>
+                    </ItemTemplate>
+                </asp:Repeater>
+   
+            
+
+    
+
+</asp:Content>
+

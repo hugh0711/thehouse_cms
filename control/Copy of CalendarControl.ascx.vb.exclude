@@ -1,0 +1,44 @@
+﻿
+Partial Class control_CalendarControl
+    Inherits System.Web.UI.UserControl
+
+    Dim dt As PromoDataSet.view_PromoDataTable
+
+    Protected Sub Calendar1_DataBinding(sender As Object, e As System.EventArgs) Handles Calendar1.DataBinding
+
+    End Sub
+
+    Protected Sub Calendar1_DayRender(sender As Object, e As System.Web.UI.WebControls.DayRenderEventArgs) Handles Calendar1.DayRender
+   
+        Dim dr As PromoDataSet.view_PromoRow
+
+        For Each dr In dt.Rows
+            With dr
+                If .StartDate = e.Day.Date Then
+                    e.Cell.BackColor = Drawing.Color.Pink
+                    e.Cell.ToolTip &= "<div>&bull;&nbsp;" & .PromoDesc & "</div>"
+                    e.Cell.CssClass = "tTip"
+                    e.Cell.Text = ""
+                    Dim link As New HyperLink()
+                    link.NavigateUrl = Utility.GetNavigateUrl(.UnitFunctionID, .PromoUrl)
+                    link.Text = e.Day.Date.Day
+                    e.Cell.Controls.Add(link)
+                    'e.Cell.Text = .PromoDesc
+                End If
+            End With
+        Next
+    End Sub
+
+    Protected Sub Calendar1_PreRender(sender As Object, e As System.EventArgs) Handles Calendar1.PreRender
+        Dim da As New PromoDataSetTableAdapters.view_PromoTableAdapter()
+        Dim PromoSettingID As Integer = CInt(ConfigurationManager.AppSettings("CalendarPromoID"))
+
+
+        dt = da.GetDataByYearMonth(PromoSettingID, Session("MyCulture"), Now().Year, Now().Month)
+
+    End Sub
+
+    Protected Sub Calendar1_SelectionChanged(sender As Object, e As System.EventArgs) Handles Calendar1.SelectionChanged
+
+    End Sub
+End Class

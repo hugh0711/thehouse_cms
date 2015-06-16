@@ -1,0 +1,444 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/backoffice/master/admin.master" AutoEventWireup="false"
+    CodeFile="event.aspx.vb" Inherits="backoffice_event" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<%@ Register Assembly="Flan.Controls" Namespace="Flan.Controls" TagPrefix="cc2" %>
+<%@ Register src="~/control/CategoryPathControl.ascx" tagname="CategoryPathControl" tagprefix="uc3" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+
+    <script src="../js/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <script src="../ckfinder/ckfinder.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+        function BrowseServer(inputId) {
+            //CKFinder.Popup('../ckfinder/', null, null, SetFileField);
+            var finder = new CKFinder();
+            finder.BasePath = '../ckfinder/';
+            finder.SelectFunction = SetFileField;
+            finder.SelectFunctionData = inputId;
+            finder.Popup();
+
+        }
+
+        function SetFileField(fileUrl, data) {
+            $("#" + data["selectFunctionData"]).val(fileUrl);
+        }
+    </script>
+    
+    <style type="text/css">
+        td
+        {
+            vertical-align: top;
+        }
+    </style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <h2>
+        <asp:Label runat="server" ID="lblFunctionName"></asp:Label></h2>
+         <asp:Label ID="lblProductID" runat="server" Visible="false"></asp:Label>
+    <asp:HiddenField runat="server" ID="hfdLang" />
+    <asp:HiddenField runat="server" ID="hfdFunctionID" Value="4" />
+    
+    <asp:UpdatePanel runat="server" ID="UpdatePanel1">
+        <ContentTemplate>
+    <div id="admin-content-container">
+        <div id="admin-content">
+            <table border="0" width="100%">
+                <colgroup>
+                    <col class="tableCaption" width="100" />
+                    <col width="300"/>
+                    <col />
+                </colgroup>
+                <asp:PlaceHolder runat="server" ID="CategoryPlaceHolder">
+                        <tr>
+                            <td>
+                                類別
+                            </td>
+                            <td>
+                                <asp:Button runat="server" ID="btnSelectCategory" Text="..." />
+                                <uc3:CategoryPathControl ID="CategoryPathControl1" runat="server" />
+                                <asp:TextBox runat="server" ID="txtCategoryID" style="display:none;" />
+                                <asp:Button runat="server" ID="btnDummy" Visible="false" />
+                                <cc1:ModalPopupExtender ID="btnSelectCategory_ModalPopupExtender" runat="server" PopupControlID="pnlCategory" BackgroundCssClass="modalBackground"
+                                    TargetControlID="btnSelectCategory" CancelControlID="btnCategoryCancel" >
+                                </cc1:ModalPopupExtender>
+                                <asp:Panel runat="server" ID="pnlCategory" CssClass="modalPopup" style="display:none;" >
+                                    <b>選擇類別:</b><br />
+                                    <br />
+                                    <asp:Label runat="server" ID="lblParentID" Visible="false"></asp:Label>
+                                    <div style="overflow: auto;">
+                                        <asp:TreeView ID="TreeView1" runat="server" ExpandDepth="0" Width="250" Height="250">
+                                            <Nodes>
+                                                <asp:TreeNode Text="主目錄" Value="0" PopulateOnDemand="true" SelectAction="Expand">
+                                                </asp:TreeNode>
+                                            </Nodes>
+                                        </asp:TreeView>
+                                    </div>
+                                    <p align="right">
+                                    <asp:Button runat="server" ID="btnCategoryCancel" Text="取消" /></p>
+                                </asp:Panel>
+                            </td>
+                            <td>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator14" runat="server" ControlToValidate="txtCategoryID"
+                                    CssClass="errorText" ErrorMessage="請選擇類別" ForeColor="" ValidationGroup="gp1"></asp:RequiredFieldValidator>
+                            </td>
+                        </tr>
+                </asp:PlaceHolder>
+                <asp:PlaceHolder runat="server" ID="ProductCodePlaceHolder">
+                <tr>
+                    <td>
+                        密碼
+                    
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtProductCode" runat="server"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="請輸入密碼"
+                            ControlToValidate="txtProductCode" ValidationGroup="gp1" EnableClientScript="false"
+                            CssClass="errorText" ForeColor=""></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                </asp:PlaceHolder>
+                <tr>
+                    <td>
+                                                名稱
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtName" runat="server" Columns="40"></asp:TextBox>
+                        <asp:Button ID="btnNameLanguage" runat="server" Text="更多語言" Visible="False" />
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="請輸入名稱"
+                            ControlToValidate="txtName" ValidationGroup="gp1" CssClass="errorText" 
+                            ForeColor=""></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        詳情
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtDescription" runat="server" Columns="40" TextMode="MultiLine" Rows="8"></asp:TextBox>
+                        <asp:Button ID="btnDescLanguage" runat="server" Text="更多語言" Visible="False" />
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ErrorMessage="請輸入詳情"
+                            ControlToValidate="txtDescription" ValidationGroup="gp1" CssClass="errorText" 
+                            ForeColor=""></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <asp:PlaceHolder runat="server" ID="DetailsPlaceHolder">
+                <tr>
+                    <td>
+                        最少訂單數量</td>
+                    <td>
+                        <asp:TextBox ID="txtMOQ" runat="server" Columns="20"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator8" runat="server" ErrorMessage="請輸入最少訂單數量"
+                            ControlToValidate="txtMOQ" ValidationGroup="gp1" CssClass="errorText" Enabled="false"
+                            ForeColor=""></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        生產時間
+                    </td>
+                    <td>
+                        <asp:TextBox ID="txtLeadTime" runat="server"></asp:TextBox>
+                        </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" ErrorMessage="請輸入生產時間"
+                            ControlToValidate="txtLeadTime" ValidationGroup="gp1" Enabled="false"
+                            CssClass="errorText" ForeColor=""></asp:RequiredFieldValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        尺吋大小</td>
+                    <td>
+                        <asp:UpdatePanel runat="server" ID="SizeUpdatePanel" UpdateMode="Conditional">
+                            <ContentTemplate>
+                                <asp:ListView runat="server" ID="lvSize" InsertItemPosition="LastItem">
+                                    <LayoutTemplate>
+                                        <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+                                    </LayoutTemplate>
+                                    <ItemTemplate>
+                                        <div>
+                                            <asp:Label runat="server" ID="lblID" Text='<%# Bind("ID") %>' Visible="false" />
+                                            <asp:Label runat="server" ID="lblSizeID" Text='<%# Bind("SizeID") %>' Visible="false" />
+                                            <asp:TextBox runat="server" ID="txtSize" Text='<%# Bind("Size") %>'></asp:TextBox>
+                                            <asp:Button runat="server" ID="btnSizeDelete" Text="刪除" CommandName="delete" />
+                                        </div>
+                                    </ItemTemplate>
+                                    <InsertItemTemplate>
+                                        <div>
+                                            <asp:TextBox runat="server" ID="txtSize" Text='<%# Bind("Size") %>'></asp:TextBox>                          
+                                            <asp:Button runat="server" ID="btnSizeInsert" Text="新增" CommandName="insert" />
+                                        </div>
+                                    </InsertItemTemplate>
+                                </asp:ListView>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+                </asp:PlaceHolder>
+                <asp:PlaceHolder runat="server" ID="PricePlaceHolder" Visible="false">
+                <tr>
+                    <td>
+                        價錢</td>
+                    <td>
+                        <asp:TextBox ID="txtPrice" runat="server"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ErrorMessage="請輸入產品價錢"
+                            ControlToValidate="txtPrice" ValidationGroup="gp1" Display="Dynamic" 
+                            CssClass="errorText" ForeColor=""></asp:RequiredFieldValidator>
+                        <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToValidate="txtPrice"
+                            ErrorMessage="產品價錢不合法" Operator="DataTypeCheck" 
+                            SetFocusOnError="True" Type="Currency"
+                            ValidationGroup="gp1" Display="Dynamic" CssClass="errorText" ForeColor=""></asp:CompareValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        折扣價</td>
+                    <td>
+                        <asp:TextBox ID="txtDiscountPrice" runat="server"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator6" runat="server" ErrorMessage="請輸入折扣價"
+                            ControlToValidate="txtDiscountPrice" ValidationGroup="gp1" 
+                            Display="Dynamic" CssClass="errorText" ForeColor=""></asp:RequiredFieldValidator>
+                        <asp:CompareValidator ID="CompareValidator2" runat="server" ControlToValidate="txtDiscountPrice"
+                            ErrorMessage="折扣價不合法" Operator="DataTypeCheck" 
+                            SetFocusOnError="True" Type="Currency"
+                            ValidationGroup="gp1" Display="Dynamic" CssClass="errorText" ForeColor=""></asp:CompareValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        成本</td>
+                    <td>
+                        <asp:TextBox ID="txtShippingFee0" runat="server"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator13" runat="server" ErrorMessage="請輸入產品成本"
+                            ControlToValidate="txtShippingFee" ValidationGroup="gp1" Display="Dynamic" 
+                            CssClass="errorText" ForeColor=""></asp:RequiredFieldValidator>
+                        <asp:CompareValidator ID="CompareValidator6" runat="server" ControlToValidate="txtShippingFee"
+                            ErrorMessage="產品成本不合法" Operator="DataTypeCheck" 
+                            SetFocusOnError="True" Type="Currency"
+                            ValidationGroup="gp1" Display="Dynamic" CssClass="errorText" ForeColor=""></asp:CompareValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        運費</td>
+                    <td>
+                        <asp:TextBox ID="txtShippingFee" runat="server"></asp:TextBox>
+                    </td>
+                    <td>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ErrorMessage="請輸入運費"
+                            ControlToValidate="txtShippingFee" ValidationGroup="gp1" Display="Dynamic" 
+                            CssClass="errorText" ForeColor=""></asp:RequiredFieldValidator>
+                        <asp:CompareValidator ID="CompareValidator3" runat="server" ControlToValidate="txtShippingFee"
+                            ErrorMessage="運費不合法" Operator="DataTypeCheck" 
+                            SetFocusOnError="True" Type="Currency"
+                            ValidationGroup="gp1" Display="Dynamic" CssClass="errorText" ForeColor=""></asp:CompareValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+                </asp:PlaceHolder>
+                <asp:PlaceHolder runat="server" ID="DatePlaceHolder" Visible="false">
+                <tr>
+                    <td>
+                        開始展示日期</td>
+                    <td>
+                        <asp:TextBox ID="txtStartSellDate" runat="server"></asp:TextBox>
+                        <cc1:CalendarExtender ID="txtStartSellDate_CalendarExtender" runat="server" TargetControlID="txtStartSellDate"
+                            Format="d/M/yyyy">
+                        </cc1:CalendarExtender>
+                    </td>
+                    <td>
+                        <asp:CompareValidator ID="CompareValidator4" runat="server" ControlToValidate="txtStartSellDate"
+                            ErrorMessage="開始展示日期不合法" Operator="DataTypeCheck" 
+                            SetFocusOnError="True" Type="Date"
+                            ValidationGroup="gp1" CssClass="errorText" ForeColor=""></asp:CompareValidator>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        結束展示日期</td>
+                    <td>
+                        <asp:TextBox ID="txtEndSellDate" runat="server"></asp:TextBox>
+                        <cc1:CalendarExtender ID="txtEndSellDate_CalendarExtender" runat="server" TargetControlID="txtEndSellDate"
+                            Format="d/M/yyyy">
+                        </cc1:CalendarExtender>
+                    </td>
+                    <td>
+                        <asp:CompareValidator ID="CompareValidator5" runat="server" ControlToValidate="txtEndSellDate"
+                            ErrorMessage="結束展示日期不合法" Operator="DataTypeCheck" 
+                            SetFocusOnError="True" Type="Date"
+                            ValidationGroup="gp1" CssClass="errorText" ForeColor=""></asp:CompareValidator>
+                    </td>
+                </tr>
+                </asp:PlaceHolder>
+                
+                <asp:PlaceHolder runat="server" ID="TagPlaceHolder">
+                <tr>
+                    <td>標韱</td>
+                    <td>
+                        <asp:UpdatePanel runat="server" ID="TagUpdatePanel" UpdateMode="Conditional">
+                            <ContentTemplate>
+                                <asp:Button runat="server" ID="btnSelectTag" Text="..." /><br />
+                                <asp:Label runat="server" ID="lblTag"></asp:Label>
+                                <asp:HiddenField runat="server" ID="hfdTag" />
+                                <asp:Button runat="server" ID="btnDummy1" style="display:none;" />
+                                <cc1:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="btnDummy1" PopupControlID="pnlTag" 
+                                    BackgroundCssClass="modalBackground" CancelControlID="btnTagCancel" />
+                                <asp:Panel runat="server" ID="pnlTag" CssClass="modalPopup" Width="450" Height="300" >
+                                    <p><b>選擇標籤:</b></p>
+                                    <asp:SqlDataSource runat="server" ID="SqlDataSourceTag" 
+                                        ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                                        SelectCommand="SELECT [TagID], [TagName] FROM [view_Tag] WHERE ([Lang] = @Lang) ORDER BY [TagName]">
+                                        <SelectParameters>
+                                            <asp:Parameter DefaultValue="zh-hk" Name="Lang" Type="String" />
+                                        </SelectParameters>
+                                    </asp:SqlDataSource>
+                                    <div style="height:200px; overflow-y:auto;">
+                                    <asp:CheckBoxList runat="server" ID="cblTag" DataSourceID="SqlDataSourceTag" RepeatDirection="Horizontal" RepeatColumns="4" RepeatLayout="Table" 
+                                        DataTextField="TagName" DataValueField="TagID" Width="100%" />
+<%--                                    <asp:ListView runat="server" ID="lvTag" DataSourceID="SqlDataSourceTag" GroupItemCount="5">
+                                        <LayoutTemplate>
+                                            <table border="0" width="100%">
+                                                <asp:PlaceHolder runat="server" ID="GroupPlaceHolder"></asp:PlaceHolder>
+                                            </table>
+                                        </LayoutTemplate>
+                                        <GroupTemplate>
+                                            <tr>
+                                                <td runat="server" id="ItemPlaceHolder"></td>
+                                            </tr>
+                                        </GroupTemplate>
+                                        <ItemTemplate>
+                                            <td>
+                                                <asp:CheckBox runat="server" ID="chkTag" Text='<%# Eval("TagName") %>' />
+                                            </td>
+                                        </ItemTemplate>
+                                    </asp:ListView>--%>
+                                    </div>
+                                    <p align="right">
+                                        <asp:Button runat="server" ID="btnTagOK" Text="確定" />&nbsp;
+                                        <asp:Button runat="server" ID="btnTagCancel" Text="取消" />
+                                    </p>
+                                </asp:Panel>
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
+                </asp:PlaceHolder>
+                <asp:PlaceHolder runat="server" ID="FilePlaceHolder">
+                <tr>
+                    <td>
+                        Content Page Url
+                    </td>
+                    <td>
+                        <asp:TextBox runat="server" ID="txtFileUrl" Columns="80"></asp:TextBox>
+                        <%--<asp:Button runat="server" ID="btnBrowse" Text="Browse Server..." UseSubmitBehavior="false" />--%>
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+                </asp:PlaceHolder>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <asp:CheckBox ID="chkEnabled" runat="server" Text="使用" Checked="true" />
+                        <asp:Label runat="server" ID="lblSortOrder" Visible="false"></asp:Label>
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+                <asp:PlaceHolder runat="server" ID="ImagePlaceHolder">
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <asp:Image runat="server" ID="imgPreview" ImageUrl="~/product_image/noimage.jpg" />
+                        <br />
+                        <asp:Button runat="server" ID="btnImage" Text="更改圖片" />
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+                </asp:PlaceHolder>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <asp:Label runat="server" ID="lblMessage" ForeColor="Red"></asp:Label>
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        &nbsp;
+                    </td>
+                    <td>
+                        <asp:Button ID="btnSave" runat="server" Text=" 儲存 " ValidationGroup="gp1" />
+                        &nbsp;<asp:Button ID="btnClose" runat="server" Text=" 返回 " />
+                        <cc1:ConfirmButtonExtender ID="btnClose_ConfirmButtonExtender" runat="server" ConfirmText="Are you sure to close without saving?"
+                            TargetControlID="btnClose" Enabled="false">
+                        </cc1:ConfirmButtonExtender>&nbsp;
+                        <asp:Button runat="server" ID="btnDelete" Text="刪除" />
+                        <cc1:ConfirmButtonExtender ID="btnDelete_ConfirmButtonExtender" runat="server" 
+                            TargetControlID="btnDelete">
+                        </cc1:ConfirmButtonExtender>
+                    </td>
+                    <td>
+                        &nbsp;</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+            </ContentTemplate>
+    </asp:UpdatePanel>
+    <asp:UpdateProgress ID="UpdateProgress1" runat="server" AssociatedUpdatePanelID="UpdatePanel1">
+    </asp:UpdateProgress>
+    <cc2:UpdateProgressOverlayExtender ID="UpdateProgressOverlayExtender1" runat="server" TargetControlID="UpdateProgress1" ControlToOverlayID="UpdatePanel1" CssClass="updateProgress" OverlayType="Control" />
+    <p>
+    </p>
+<br />
+<br />
+<br />
+</asp:Content>

@@ -1,0 +1,48 @@
+﻿
+Partial Class channel
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Request("id") IsNot Nothing Then
+                ViewState("id") = CInt(Request("id"))
+                LoadData()
+            End If
+        End If
+    End Sub
+
+    Protected Sub LoadData()
+        Dim CategoryAdapter As New CategoryDataSetTableAdapters.view_CategoryTableAdapter()
+        Dim dt As CategoryDataSet.view_CategoryDataTable
+        Dim dr As CategoryDataSet.view_CategoryRow
+        Dim ID As Integer = ViewState("id")
+
+        hfdChannelID.Value = ID
+        dt = CategoryAdapter.GetDataByCategoryID(ID, Session("MyCulture"))
+        If dt.Rows.Count > 0 Then
+            dr = dt.Rows(0)
+            txtChannel.Text = dr.CategoryName
+            lblDesc.Text = dr.Description
+        End If
+
+    End Sub
+
+    Protected Function GetThumbnail(ByVal CategoryID As Integer) As String
+        Dim imgUrl As String
+        imgUrl = String.Format("~/product_image/category_thumbnail/{0}.jpg", Eval("CategoryID"))
+        imgUrl = String.Format("{0}.jpg", Eval("CategoryID"))
+        imgUrl = IO.Path.Combine(ConfigurationManager.AppSettings("CategoryThumbnailPath"), imgUrl)
+        If Not IO.File.Exists(Server.MapPath(imgUrl)) Then
+            imgUrl = ""
+        End If
+        Return imgUrl
+    End Function
+
+    Protected Function IsShowThumbnail(ByVal CategoryID As Integer) As Boolean
+        Dim imgUrl As String
+        imgUrl = String.Format("{0}.jpg", Eval("CategoryID"))
+        imgUrl = IO.Path.Combine(ConfigurationManager.AppSettings("CategoryThumbnailPath"), imgUrl)
+        Return IO.File.Exists(Server.MapPath(imgUrl))
+    End Function
+
+End Class

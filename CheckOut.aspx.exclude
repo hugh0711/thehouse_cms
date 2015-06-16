@@ -1,0 +1,324 @@
+<%@ Page Title="" Language="VB" MasterPageFile="~/Master/MasterPageInner.master" AutoEventWireup="false" CodeFile="CheckOut.aspx.vb" Inherits="CheckOut" meta:resourcekey="PageResource1" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+	<style type="text/css" >
+	    .content { padding: 16px 10px 0px 10px; font-size:16px;}
+	    
+	    .checkout { float:left;}
+	    .checkout th, .checkout td { text-align:right }
+	    
+	    .productname { text-align:left;}
+	    
+    </style>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+	<div class="form" align="center">
+		<br />
+		
+	<%--Form Input--%>
+    <asp:Panel ID="pnlFormInput" runat="server" Width="800px" meta:resourcekey="pnlFormInputResource1">
+    <table  cellspacing="0" width="800px">
+    <tr>
+        <th width="200px">
+            <asp:Localize ID="locCustomerName" runat="server" Text="* Name" meta:resourcekey="locCustomerNameResource1"></asp:Localize>
+        </th>
+        <td width="420px">
+            <asp:TextBox ID="txtCustomerName" runat="server" Width="400px" meta:resourcekey="txtCustomerNameResource1"></asp:TextBox>
+        </td>
+        <td width="280px">
+			<asp:RequiredFieldValidator ID="reqtxtCustomerName" runat="server" ErrorMessage="Name require" ControlToValidate="txtCustomerName" Display="Dynamic" 
+				meta:resourcekey="reqtxtCustomerNameResource1"></asp:RequiredFieldValidator>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="locContactPhone" runat="server" Text="* Contact Phone" meta:resourcekey="locContactPhoneResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:TextBox ID="txtContactPhone" runat="server" Width="400px" meta:resourcekey="txtContactPhoneResource1"></asp:TextBox>
+        </td>
+        <td>
+			<asp:RequiredFieldValidator ID="reqtxtContactPhone" runat="server" ErrorMessage="Contact Phone require" ControlToValidate="txtContactPhone" Display="Dynamic" 
+				meta:resourcekey="reqtxtContactPhoneResource1"></asp:RequiredFieldValidator>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="locDeliveryAddress" runat="server" Text="* Delivery Address" meta:resourcekey="locDeliveryAddressResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:TextBox ID="txtDeliveryAddress" runat="server" Width="400px" TextMode="MultiLine" Rows="4" meta:resourcekey="txtDeliveryAddressResource1"></asp:TextBox>
+        </td>
+        <td>
+			<asp:RequiredFieldValidator ID="reqtxtDeliveryAddress" runat="server" ErrorMessage="Delivery Address require" ControlToValidate="txtDeliveryAddress" 
+				Display="Dynamic" meta:resourcekey="reqtxtDeliveryAddressResource1"></asp:RequiredFieldValidator>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="locCountry" runat="server" Text="* Country" meta:resourcekey="locCountryResource1"></asp:Localize>
+        </th>
+        <td>
+			<asp:RadioButtonList ID="radCountry" runat="server" RepeatDirection="Horizontal" meta:resourcekey="radCountryResource1">
+				<asp:ListItem Value="Local" Text="Hong Kong" meta:resourcekey="ListItemResource1"></asp:ListItem>
+				<asp:ListItem Value="Overseas" Text="Overseas" meta:resourcekey="ListItemResource2"></asp:ListItem>
+				<asp:ListItem Value="OverseasExpress" Text="Overseas Express" meta:resourcekey="ListItemResource3"></asp:ListItem>
+			</asp:RadioButtonList>
+        </td>
+        <td>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="locEmail" runat="server" Text="* Email" meta:resourcekey="locEmailResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:TextBox ID="txtEmail" runat="server" Width="400px" meta:resourcekey="txtEmailResource1"></asp:TextBox>
+        </td>
+        <td>
+			<asp:RequiredFieldValidator ID="reqtxtEmail" runat="server" ErrorMessage="Email require" ControlToValidate="txtEmail" Display="Dynamic" 
+				meta:resourcekey="reqtxtEmailResource1"></asp:RequiredFieldValidator>
+        </td>
+    </tr>
+    <tr>
+		<th>
+			<asp:Localize ID="locPaymentMenthod" runat="server" Text="Payment Method" meta:resourcekey="locPaymentMenthodResource1"></asp:Localize>
+		</th>
+		<td colspan="2">
+			<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+				<ContentTemplate>
+			<table border="0" cellpadding="0" cellspacing="0">
+				<tr>
+					<td align="left" valign="top" width="140px">
+			<asp:RadioButtonList ID="radPaymentMethod" runat="server"
+				DataSourceID="dsPaymentMethod" DataTextField="LangPaymentMethod" 
+				DataValueField="PaymentMethodId" AutoPostBack="True" meta:resourcekey="radPaymentMethodResource1">
+			</asp:RadioButtonList>
+					</td>
+					<td align="left" valign="top" height="160px">
+			<asp:Literal ID="ltrPaymentMethod" runat="server" meta:resourcekey="ltrPaymentMethodResource1"></asp:Literal>
+					</td>
+				</tr>
+			</table>
+			<asp:SqlDataSource ID="dsPaymentMethod" runat="server" 
+				ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+				SelectCommand="SELECT * FROM [view_PaymentMethod] WHERE ([Lang] = @Lang) ORDER BY [Sort]">
+				<SelectParameters>
+					<asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+				</SelectParameters>
+			</asp:SqlDataSource>
+				</ContentTemplate>
+			</asp:UpdatePanel>
+		</td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="locRemark" runat="server" Text="Leave your message" meta:resourcekey="locRemarkResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:TextBox ID="txtRemark" runat="server" Width="400px" TextMode="MultiLine" Rows="4" meta:resourcekey="txtRemarkResource1"></asp:TextBox>
+        </td>
+        <td>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3" style="padding: 0px">
+        <br />
+			<table border="0" cellpadding="0" cellspacing="0" width="800px">
+				<tr>
+					<td width="400px" style="padding-left: 10px">
+						<asp:Button ID="btnBackInput" runat="server" Text="Go back" CausesValidation="False" BorderStyle="Solid" Width="100px"
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnBackInputResource1" />
+					</td>
+					<td style="padding-right: 10px; text-align:right;">
+						<asp:Button ID="btnSubmit" runat="server" Text="Next"  BorderStyle="Solid"   Width="100px"
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnSubmitResource1" />
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+	</table>
+	</asp:Panel>
+
+	<%--Shopping Cart--%>
+	<asp:Panel ID="pnlShoppingCart" runat="server" meta:resourcekey="pnlShoppingCartResource1">
+    <table border="0" cellpadding="0" cellspacing="0" class="checkout">
+        <tr>
+            <td width="710px" style="padding-left:20px;">
+                <asp:Panel ID="pnlCart" runat="server" Width="760px" BackColor="#F7F4F4" 
+                    ForeColor="#6F7C6B" meta:resourcekey="pnlCartResource1">
+                <asp:GridView ID="gvShoppingCart" runat="server" AutoGenerateColumns="False" 
+                    ForeColor="Black" GridLines="Horizontal" BorderStyle="None" Font-Size="12px" meta:resourcekey="gvShoppingCartResource1">
+                    <RowStyle HorizontalAlign="Right" />
+					<Columns>
+						<asp:BoundField DataField="CartId" HeaderText="CartId" meta:resourcekey="BoundFieldResource1" Visible="False" />
+						<asp:BoundField DataField="ProductId" HeaderText="ProductId" meta:resourcekey="BoundFieldResource2" Visible="False" />
+						<asp:TemplateField HeaderStyle-HorizontalAlign="Left" HeaderText="Product" meta:resourcekey="TemplateFieldResource1">
+							<ItemTemplate>
+								<table border="0" cellpadding="0" cellspacing="0" width="400px">
+									<tr>
+										<td style="padding-top: 16px; vertical-align:top; text-align:left;" width="100px" valign="top">
+											<asp:Image ID="imgProduct" runat="server" BorderColor="#DADADA" BorderStyle="Solid" BorderWidth="5px" ImageUrl='<%# DisplayProductImage(Eval("ProductId")) %>' 
+												meta:resourcekey="imgProductResource1" Width="80px" />
+										</td>
+										<td  style="padding-top: 16px; vertical-align:top; text-align:left;" width="300px" valign="top" class="content">
+											<asp:Label ID="lblProductName" runat="server" ForeColor="Black" meta:resourcekey="lblProductNameResource1" Text='<%# DisplayProductName(Eval("ProductId")) %>'></asp:Label>
+											<br />
+											<asp:Label ID="lblProductCode" runat="server" ForeColor="#DADADA" meta:resourcekey="lblProductCodeResource1" Text='<%# Eval("ProductCode") %>'></asp:Label>
+											<br />
+											<br />
+											<br />
+										</td>
+									</tr>
+								</table>
+							</ItemTemplate>
+						</asp:TemplateField>
+						<asp:BoundField DataField="Quantity" HeaderStyle-HorizontalAlign="Center" HeaderText="Quantity" ItemStyle-HorizontalAlign="Right" meta:resourcekey="BoundFieldResource3">
+							<ItemStyle Width="100px" VerticalAlign="Top" CssClass="content" />
+						</asp:BoundField>
+						<asp:BoundField DataField="Price" DataFormatString="HK${0:n2}" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Right" HeaderText="Price" meta:resourcekey="BoundFieldResource4">
+							<ItemStyle ForeColor="#DE0D13" VerticalAlign="Top" Width="100px" CssClass="content" />
+						</asp:BoundField>
+						<asp:BoundField DataField="ShippingFee" DataFormatString="HK${0:n2}" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Right" HeaderText="Shipping Fee" 
+							meta:resourcekey="BoundFieldResource5">
+							<ItemStyle ForeColor="#DE0D13"  VerticalAlign="Top" Width="100px" CssClass="content" />
+						</asp:BoundField>
+					</Columns>
+                    <HeaderStyle BackColor="#DADADA" Font-Size="16px" ForeColor="#243220" />
+                </asp:GridView>
+                <br />
+                <hr />
+                <br />
+                <table border="0" cellpadding="0" cellspacing="0" align="left" width="760px">
+                    <tr>
+                        <td width="560px" align="right">
+                            <asp:Label ID="lblTotalAmount" runat="server" Text="Total Amount" ForeColor="#6F7C6B" meta:resourcekey="lblTotalAmountResource1"></asp:Label>
+                        </td>
+                        <td width="100px"></td>
+                        <td width="100px" align="right">
+                            <asp:Label ID="txtTotalAmount" runat="server" ForeColor="#DE0D13" 
+								CssClass="content" meta:resourcekey="txtTotalAmountResource1"></asp:Label>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+                <br />
+                <table border="0" cellpadding="0" cellspacing="0" align="left" width="760px">
+                    <tr>
+                        <td width="380px" align="left" style="padding-left:10px; text-align:left;">
+                            <asp:Button ID="btnCartBack" runat="server" Text="Go Back" Width="140px" BorderStyle="Solid" 
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnCartBackResource1"/>
+                        </td>
+                        <td width="380px" align="right" style="padding-right:10px;">
+                            <asp:Button ID="btnCartNext" runat="server" Text="Next" Width="120px" BorderStyle="Solid" 
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnCartNextResource1"/>
+                        </td>
+                    </tr>
+                </table>
+                <br /><br /><br /><br />
+                </asp:Panel>
+            </td>
+        </tr>
+    </table>	
+	</asp:Panel>
+	
+
+	<%--Form Display--%>
+	<asp:Panel ID="pnlFormDisplay" runat="server" Width="700px" meta:resourcekey="pnlFormDisplayResource1" style="clear:both;">
+    <table  cellspacing="0" width="700px">
+    <tr>
+        <th>
+            <asp:Localize ID="loc2CustomerName" runat="server" Text="Name" meta:resourcekey="loc2CustomerNameResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:Label ID="txt2CustomerName" runat="server" Width="400px" meta:resourcekey="txt2CustomerNameResource1"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="loc2ContactPhone" runat="server" Text="Contact Phone" meta:resourcekey="loc2ContactPhoneResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:Label ID="txt2ContactPhone" runat="server" Width="400px" meta:resourcekey="txt2ContactPhoneResource1"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="loc2DeliveryAddress" runat="server" Text="Delivery Address" meta:resourcekey="loc2DeliveryAddressResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:Label ID="txt2DeliveryAddress" runat="server" Width="400px" meta:resourcekey="txt2DeliveryAddressResource1"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="loc2Country" runat="server" Text="Delivery Address" meta:resourcekey="loc2CountryResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:Label ID="txt2Country" runat="server" Width="400px" meta:resourcekey="txt2CountryResource1"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="loc2Email" runat="server" Text="Email" meta:resourcekey="loc2EmailResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:Label ID="txt2Email" runat="server" Width="400px" meta:resourcekey="txt2EmailResource1"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+		<th>
+			<asp:Localize ID="loc2PaymentMethod" runat="server" Text="Payment Method" meta:resourcekey="loc2PaymentMethodResource1"></asp:Localize>
+		</th>
+		<td>
+			<asp:Label ID="txt2PaymentMethod" runat="server" meta:resourcekey="txt2PaymentMethodResource1"></asp:Label>
+		</td>
+    </tr>
+    <tr>
+        <th>
+            <asp:Localize ID="loc2Remark" runat="server" Text="Leave your message" meta:resourcekey="loc2RemarkResource1"></asp:Localize>
+        </th>
+        <td>
+            <asp:Label ID="txt2Remark" runat="server" Width="400px" meta:resourcekey="txt2RemarkResource1"></asp:Label>
+        </td>
+    </tr>
+    <tr>
+		<th>
+			<asp:Localize ID="locTotalAmount" runat="server" Text="Total Amount" meta:resourcekey="locTotalAmountResource1"></asp:Localize>
+		</th>
+		<td>
+			<asp:Label ID="txt2TotalAmount" runat="server" meta:resourcekey="txt2TotalAmountResource1"></asp:Label>
+		</td>
+    </tr>
+    <tr>
+        <td colspan="2" style="padding: 0px">
+			<br />
+			<table border="0" cellpadding="0" cellspacing="0" width="700px">
+				<tr>
+					<td width="350px" style="paddingleft:10px">
+						<asp:Button ID="btnBackDisplay" runat="server" Text="Go back" CausesValidation="False" BorderStyle="Solid" Width="100px"
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnBackDisplayResource1" />
+					</td>
+					<td style="padding-right:10px; text-align:right;">
+						<asp:Button ID="btnConfirm" runat="server" Text="Confirm" BorderStyle="Solid" Width="100px"
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnConfirmResource1" />
+					</td>
+				</tr>
+			</table>
+        </td>
+    </tr>
+	</table>
+	</asp:Panel>
+
+		<%--<asp:RoundedCornersExtender ID="pnlFormDisplay_RoundedCornersExtender" 
+			runat="server" Enabled="True" Radius="10" TargetControlID="pnlFormDisplay" 
+			BorderColor="218, 218, 218" Color="247, 244, 244">
+		</asp:RoundedCornersExtender>--%>
+
+<br /><br />
+</div>
+</asp:Content>
+

@@ -1,0 +1,51 @@
+﻿
+Partial Class initdb
+    Inherits System.Web.UI.Page
+
+    Protected Sub btnStart_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnStart.Click
+        Dim newUser As MembershipUser
+
+        lblMessage.Text = ""
+
+        'Dim Users As MembershipUserCollection = Membership.GetAllUsers()
+        'For Each User As MembershipUser In Users
+        '    Membership.DeleteUser(User.UserName)
+        'Next
+        'Dim MemberAdaptor As New MemberDataSetTableAdapters.Member_DetailTableAdapter()
+        'MemberAdaptor.DeleteAll()
+        'lblMessage.Text &= "All users are deleted!<br />"
+
+        Membership.DeleteUser("admin")
+        lblMessage.Text &= "Admin is deleted!<br />"
+
+        newUser = Membership.CreateUser("admin", "admin2011", "wilton@innowil.com")
+        'MemberAdaptor.Insert("admin", "Admin", "", "M", #1/1/1900#, "", "", "", "", "", "", "", 0, 0, #1/1/1900#, #1/1/2999#, "", "", "", "")
+
+        lblMessage.Text &= "User ""admin"" is created<br />"
+
+        Dim _Roles() As String = {"Admin", "Member"}
+        Dim _role As String
+
+        For Each _role In _Roles
+            If Roles.RoleExists(_role) Then
+                lblMessage.Text &= "Role """ & _role & """ already existed<br/>"
+            Else
+                Roles.CreateRole(_role)
+                lblMessage.Text &= "Role """ & _role & """ is created<br/>" & vbCrLf
+            End If
+            Roles.AddUserToRole("admin", _role)
+            lblMessage.Text &= "User ""admin"" is added to Role """ & _role & """<br/>"
+        Next
+        'Roles.AddUserToRole("editor", "Editor")
+        'Roles.AddUserToRole("editor", "Writer")
+        'Roles.AddUserToRole("editor", "User")
+    End Sub
+
+
+    Protected Sub btnAddManager_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnAddManager.Click
+        If Not Roles.RoleExists("會員") Then
+            Roles.CreateRole("會員")
+            lblMessage.Text &= "Role ""會員"" is created<br/>" & vbCrLf
+        End If
+    End Sub
+End Class

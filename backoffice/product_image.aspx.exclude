@@ -1,0 +1,125 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/backoffice/master/admin.master" AutoEventWireup="false"
+    CodeFile="product_image.aspx.vb" Inherits="backoffice_product_image" %>
+
+<%@ Register Src="../UserControl/ProductAdminControl.ascx" TagName="ProductAdminControl"
+    TagPrefix="uc1" %>
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="cc1" %>
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <link href="../css/jquery.Jcrop.css" rel="stylesheet" type="text/css" />
+
+    <script src="../js/jquery-1.3.2.min.js" type="text/javascript"></script>
+
+    <script src="../js/jquery.Jcrop.min.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("img[id$=imgCrop]").Jcrop({
+                onChange: showPreview,
+                onSelect: showPreview,
+                aspectRatio: 1.333
+            });
+        });
+
+        function showPreview(coords) {
+            $("input[type=hidden][id$=_X]").val(coords.x);
+            $("input[type=hidden][id$=_Y]").val(coords.y);
+            $("input[type=hidden][id$=_W]").val(coords.w);
+            $("input[type=hidden][id$=_H]").val(coords.h);
+            
+            var rx = Number($("input[id$=hfdPreviewWidth]").val()) / coords.w;
+            var ry = Number($("input[id$=hfdPreviewHeight]").val()) / coords.h;
+            var rw = $("img[id$=imgCrop]").width();
+            var rh = $("img[id$=imgCrop]").height();
+            
+            $("img[id$=imgPreview]").css({
+                width: Math.round(rx * rw) + "px",
+                height: Math.round(ry * rh) + "px",
+                marginLeft: "-" + Math.round(rx * coords.x) + "px",
+                marginTop: "-" + Math.round(ry * coords.y) + "px"
+            });
+        }
+    </script>
+
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <h2>
+        <asp:Label runat="server" ID="lblProductName"></asp:Label> : Image</h2>
+    <asp:Label runat="server" ID="lblProductID" Visible="false"></asp:Label>
+    <asp:HiddenField runat="server" ID="hfdPreviewWidth" />
+    <asp:HiddenField runat="server" ID="hfdPreviewHeight" />
+    <asp:HiddenField ID="X" runat="server" />
+    <asp:HiddenField ID="Y" runat="server" />
+    <asp:HiddenField ID="W" runat="server" />
+    <asp:HiddenField ID="H" runat="server" />
+    <asp:Panel runat="server" ID="Panel1">
+        <div id="admin-content-container">
+            <div id="admin-menu-panel">
+                <uc1:ProductAdminControl ID="ProductAdminControl1" runat="server" />
+            </div>
+            <div id="admin-content">
+                
+                <div id="product-image-container">
+                    <asp:Image runat="server" ID="Image1" ImageUrl="~/images/spacer.gif" CssClass="product-image-1"
+                        BorderWidth="1" />
+                    <asp:Image runat="server" ID="Image2" ImageUrl="~/images/spacer.gif" CssClass="product-image-2"
+                        BorderWidth="1" />
+                    <asp:Image runat="server" ID="Image3" ImageUrl="~/images/spacer.gif" CssClass="product-image-3"
+                        BorderWidth="1" />
+                </div>
+                <div id="product-image-upload">
+                    <div>
+                        Image #1:<br />
+                        <asp:FileUpload runat="server" ID="FileUpload1" />
+                        <asp:Button runat="server" ID="btnUpload1" Text="Upload" />
+                        <asp:Button runat="server" ID="btnRemove1" Text="Remove" />
+                        <cc1:ConfirmButtonExtender ID="btnRemove1_ConfirmButtonExtender" runat="server" ConfirmText="Are you sure to remove image #1?" 
+                            TargetControlID="btnRemove1">
+                        </cc1:ConfirmButtonExtender>
+                        <br />
+                        <br />
+                        Image #2:<br />
+                        <asp:FileUpload runat="server" ID="FileUpload2" />
+                        <asp:Button runat="server" ID="btnUpload2" Text="Upload" />
+                        <asp:Button runat="server" ID="btnRemove2" Text="Remove" />
+                        <cc1:ConfirmButtonExtender ID="btnRemove2_ConfirmButtonExtender" runat="server"  ConfirmText="Are you sure to remove image #2?" 
+                            TargetControlID="btnRemove2">
+                        </cc1:ConfirmButtonExtender>
+                        <br />
+                        <br />
+                        Image #3:<br />
+                        <asp:FileUpload runat="server" ID="FileUpload3" />
+                        <asp:Button runat="server" ID="btnUpload3" Text="Upload" />
+                        <asp:Button runat="server" ID="btnRemove3" Text="Remove" />
+                        <cc1:ConfirmButtonExtender ID="btnRemove3_ConfirmButtonExtender" runat="server" ConfirmText="Are you sure to remove image #3?"  
+                            TargetControlID="btnRemove3">
+                        </cc1:ConfirmButtonExtender>
+                        <br />
+                        <br />
+                        <asp:Label runat="server" ID="lblMessage" ForeColor="Red"></asp:Label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </asp:Panel>
+    <asp:Panel runat="server" ID="Panel2">
+        <table border="0">
+            <tr>
+                <td>
+                    Select the show area for the product category:<br />
+                    <asp:Image runat="server" ID="imgCrop" />
+                </td>
+                <td>
+                    Preview:<br />
+                    <asp:Panel runat="server" ID="pnlPreview" CssClass="image-mask">
+                        <asp:Image runat="server" ID="imgPreview" />
+                    </asp:Panel>
+                </td>
+            </tr>
+        </table>
+        <asp:Label runat="server" ID="lblMessage2" ForeColor="Red"></asp:Label>
+        <asp:Button runat="server" ID="btnSave" Text="Save" />
+    </asp:Panel>
+    <br />
+    <br />
+    <br />
+</asp:Content>

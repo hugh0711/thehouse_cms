@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="TheHouse_dev" Class="LoginAPIDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=.\sqlexpress;Initial Catalog=TheHouse_dev;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="MySqlConnection" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Login_Sessions" Member="Login_Sessions">
+    <Type Name="Login_Session">
+      <Column Name="id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="sid" Type="System.String" DbType="NVarChar(128) NOT NULL" CanBeNull="false" />
+      <Column Name="UserName" Type="System.String" DbType="NVarChar(256) NOT NULL" CanBeNull="false" />
+      <Column Name="sessdata" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="timecreated" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="timemodified" Type="System.Int64" DbType="BigInt NOT NULL" CanBeNull="false" />
+      <Column Name="firstip" Type="System.String" DbType="NVarChar(45)" CanBeNull="true" />
+      <Column Name="lastip" Type="System.String" DbType="NVarChar(45)" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

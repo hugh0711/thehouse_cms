@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="HKSPA_dev" Class="CMSDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="WebSettings" ConnectionString="Data Source=.\sqlexpress;Initial Catalog=HKSPA_dev;Integrated Security=True" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="MySqlConnection" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Album" Member="Albums">
+    <Type Name="Album">
+      <Column Name="AlbumID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AlbumName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="AlbumDate" Type="System.DateTime" DbType="Date" CanBeNull="true" />
+      <Column Name="PhotoCount" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Enabled" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="PreviewUrl" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Association Name="Album_AlbumPhoto" Member="AlbumPhotos" ThisKey="AlbumID" OtherKey="AlbumID" Type="AlbumPhoto" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlbumPhoto" Member="AlbumPhotos">
+    <Type Name="AlbumPhoto">
+      <Column Name="PhotoID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="AlbumID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="PhotoName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Description" Type="System.String" DbType="NText" CanBeNull="true" UpdateCheck="Never" />
+      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Association Name="AlbumPhoto_AlbumPhoto_info" Member="AlbumPhoto_infos" ThisKey="PhotoID" OtherKey="PhotoID" Type="AlbumPhoto_info" />
+      <Association Name="Album_AlbumPhoto" Member="Album" ThisKey="AlbumID" OtherKey="AlbumID" Type="Album" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlbumCategory" Member="AlbumCategories">
+    <Type Name="AlbumCategory">
+      <Column Name="CategoryID" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="AlbumID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+    </Type>
+  </Table>
+  <Table Name="dbo.AlbumPhoto_info" Member="AlbumPhoto_infos">
+    <Type Name="AlbumPhoto_info">
+      <Column Name="PhotoID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" IsPrimaryKey="true" CanBeNull="false" />
+      <Column Name="camera_model" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="f_stop" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="exposure_time" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="iso_speed" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="exposure_bias" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="focal_length" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="max_aperture" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="meeting_mode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="subject_distance" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="flash_mode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Author" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Association Name="AlbumPhoto_AlbumPhoto_info" Member="AlbumPhoto" ThisKey="PhotoID" OtherKey="PhotoID" Type="AlbumPhoto" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.view_AlbumPhotoInfo" Member="view_AlbumPhotoInfos">
+    <Type Name="view_AlbumPhotoInfo">
+      <Column Name="PhotoID" Type="System.Guid" DbType="UniqueIdentifier NOT NULL" CanBeNull="false" />
+      <Column Name="AlbumID" Type="System.Guid" DbType="UniqueIdentifier" CanBeNull="true" />
+      <Column Name="PhotoName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="camera_model" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="f_stop" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="exposure_time" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="iso_speed" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="exposure_bias" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="focal_length" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="max_aperture" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="meeting_mode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="subject_distance" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="flash_mode" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
+      <Column Name="Author" Type="System.String" DbType="NVarChar(100)" CanBeNull="true" />
+      <Column Name="AlbumName" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="Enabled" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Promo" Member="Promos">
+    <Type Name="Promo">
+      <Column Name="PromoID" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="PromoSettingID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="PromoImageUrl" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="PromoUrl" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UnitFunctionID" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="StartDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="EndDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="IsSingleDay" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="SortOrder" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="Enabled" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="CreatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="CreateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+      <Column Name="UpdatedBy" Type="System.String" DbType="NVarChar(256)" CanBeNull="true" />
+      <Column Name="UpdateDate" Type="System.DateTime" DbType="DateTime" CanBeNull="true" />
+    </Type>
+  </Table>
+</Database>

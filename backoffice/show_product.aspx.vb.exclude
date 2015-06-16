@@ -1,0 +1,84 @@
+﻿Imports System.Data
+
+Partial Class show_product
+    Inherits System.Web.UI.Page
+
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            If Request("id") IsNot Nothing Then
+                hfdProductID.Value = Request("id")
+                LoadData(CInt(Request("id")))
+            End If
+        End If
+    End Sub
+
+    Protected Sub LoadData(ByVal ProductID As Integer)
+        Dim ProductAdapter As New ProductDataSetTableAdapters.view_ProductTableAdapter()
+        Dim ProductTable As ProductDataSet.view_ProductDataTable
+        Dim ProductRow As ProductDataSet.view_ProductRow
+        Dim ImageAdapter As New ProductDataSetTableAdapters.ProductImageTableAdapter()
+
+        ProductTable = ProductAdapter.GetDataByProductID(ProductID, Session("MyCulture"))
+        If ProductTable.Rows.Count > 0 Then
+            ProductRow = ProductTable.Rows(0)
+            With ProductRow
+                lblProductCode.Text = .ProductCode
+                lblName.Text = .Description
+                lblMOQ.Text = .MOQUnit
+                lblProductionLeadTime.Text = .ProductionLeadTime
+                LoadCategory(.CategoryID)
+            End With
+
+            imgProduct.ImageUrl = IO.Path.Combine(ConfigurationManager.AppSettings("ProductImagePath"), ImageAdapter.GetImageUrl(ProductID, 1))
+
+            Dim SizeAdapter As New ProductDataSetTableAdapters.ProductSizeTableAdapter()
+            Dim SizeTable As ProductDataSet.ProductSizeDataTable
+            Dim SizeRow As ProductDataSet.ProductSizeRow
+            Dim SizeList As New List(Of String)
+            SizeTable = SizeAdapter.GetDataByProductID(ProductID)
+            For Each SizeRow In SizeTable.Rows
+                SizeList.Add(SizeRow.Size)
+            Next
+            lblSize.Text = Join(SizeList.ToArray(), ", ")
+
+            Dim TagAdapter As New ProductDataSetTableAdapters.view_ProductTagTableAdapter()
+            Dim TagTable As ProductDataSet.view_ProductTagDataTable
+            Dim TagRow As ProductDataSet.view_ProductTagRow
+            Dim TagList As New List(Of String)
+            TagTable = TagAdapter.GetDataByProductID(ProductID, Session("MyCulture"))
+            For Each TagRow In TagTable.Rows
+                TagList.Add(TagRow.TagName)
+            Next
+            lblTag.Text = Join(TagList.ToArray(), ", ")
+
+            If ShoppingCart.Existed(CType(Session("Cart"), DataTable), ProductID) Then
+                lblMessage.Text = "己加到報價單"
+                btnAddToCart.Visible = False
+            End If
+
+        End If
+    End Sub
+
+    Protected Sub LoadCategory(ByVal CategoryID As Integer)
+        With CategoryPathControl1
+            .CategoryID = CategoryID
+            .ShowPath("showroom.aspx?id=", "主目錄", True)
+        End With
+    End Sub
+
+    'Protected Sub btnBack_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnBack.Click
+    '    Response.Redirect("~/showroom.aspx?id=" & CategoryPathControl1.CategoryID)
+    'End Sub
+
+    Protected Sub btnAddToCart_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnAddToCart.Click
+        Dim Cart As DataTable = CType(Session("Cart"), DataTable)
+        ShoppingCart.AddToCart(Cart, CInt(hfdProductID.Value), "", "", 0, 0, 0)
+        lblMessage.Text = "己加到報價單"
+        btnAddToCart.Visible = False
+    End Sub
+
+    Protected Sub btnQuotation_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnQuotation.Click
+        Response.Redirect("~/quotation.aspx")
+    End Sub
+End Class

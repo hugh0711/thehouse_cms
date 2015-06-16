@@ -1,0 +1,41 @@
+﻿Imports Facebook
+Imports Facebook.Web
+
+Partial Class facebooklogin
+    Inherits System.Web.UI.Page
+
+    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        If Not Page.IsPostBack Then
+            Bind()
+        End If
+    End Sub
+
+    Protected Sub Bind()
+        Dim FBContext As New FacebookWebContext()
+
+        If FBContext.IsAuthenticated Then
+            Dim FBClient As New FacebookWebClient()
+            Dim result = CType(FBClient.Get("me?fields=id"), Facebook.JsonObject)
+            Dim ID As String = result("id")
+            Dim Username As String = (New MemberDetailDataSetTableAdapters.MemberDetailTableAdapter()).GetUserID(ID)
+            If String.IsNullOrEmpty(Username) Then
+                Response.Redirect("~/register.aspx?link=facebook")
+            Else
+                Try
+                    Dim User As MembershipUser = Membership.GetUser(Username)
+                    If User IsNot Nothing Then
+                        Session("FacebookAccessToken") = FBContext.AccessToken
+                        FormsAuthentication.SetAuthCookie(Username, False)
+                        Response.Redirect("~/")
+                    Else
+                        Response.Redirect("~/register.aspx?link=facebook")
+                    End If
+                Catch ex As Exception
+                    Response.Redirect("~/register.aspx?link=facebook")
+                End Try
+            End If
+        Else
+            Response.Redirect("~/login.aspx")
+        End If
+    End Sub
+End Class

@@ -1,0 +1,100 @@
+<%@ Page Title="" Language="VB" MasterPageFile="~/Master/MasterPageInner.master" AutoEventWireup="false" CodeFile="ShoppingCart.aspx.vb" Inherits="ShoppingCart" meta:resourcekey="PageResource1" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+	<style type="text/css" >
+    .content { padding: 16px 10px 0px 10px; font-size:16px;}
+    </style>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+	<br />
+    <table border="0" cellpadding="0" cellspacing="0" align="left">
+        <tr>
+            <td width="710px" style="padding-left:50px;">
+                <asp:Panel ID="pnlCart" runat="server" Width="760px" BackColor="#F7F4F4" 
+                    ForeColor="#6F7C6B" meta:resourcekey="pnlCartResource1">
+                <asp:GridView ID="gvShoppingCart" runat="server" AutoGenerateColumns="False" 
+                    ForeColor="Black" GridLines="Horizontal" BorderStyle="None" Font-Size="12px" meta:resourcekey="gvShoppingCartResource1">
+                    <Columns>
+                        <asp:BoundField DataField="CartId" HeaderText="CartId" Visible="False" meta:resourcekey="BoundFieldResource1" />
+                        <asp:BoundField DataField="ProductId" HeaderText="ProductId" Visible="False" meta:resourcekey="BoundFieldResource2" />
+                        <asp:TemplateField HeaderText="Product" meta:resourcekey="TemplateFieldResource1">
+                            <ItemTemplate>
+                                <table border="0" cellpadding="0" cellspacing="0" width="400px">
+                                    <tr>
+                                        <td width="100px" align="left" style="padding-top: 16px; vertical-align:top;">
+                                            <asp:Image ID="imgProduct" runat="server" Width="80px" ImageUrl='<%# DisplayProductImage(Eval("ProductId")) %>' BorderWidth="5px" BorderStyle="Solid" 
+												BorderColor="#DADADA" meta:resourcekey="imgProductResource1" />
+                                        </td>
+                                        <td width="300px" align="left" valign="top" class="content">
+                                            <asp:Label ID="lblProductName" runat="server" Text='<%# DisplayProductName(Eval("ProductId")) %>' ForeColor="Black" meta:resourcekey="lblProductNameResource1"></asp:Label>
+                                            <br />
+                                            <asp:Label ID="lblProductCode" runat="server" Text='<%# Eval("ProductCode") %>' ForeColor="#DADADA" meta:resourcekey="lblProductCodeResource1"></asp:Label>
+                                            <br />
+                                            <br />
+                                            <br />
+                                            <asp:LinkButton ID="btnRemove" runat="server" Text="Remove item" CommandName="btnRemove" CommandArgument='<%# Eval("CartId") %>' ForeColor="#6F7C6B" 
+												Font-Size="12px" meta:resourcekey="btnRemoveResource1"></asp:LinkButton>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                        <asp:BoundField DataField="Quantity" HeaderText="Quantity" meta:resourcekey="BoundFieldResource3" >
+                        <ItemStyle Width="100px" HorizontalAlign="Left" VerticalAlign="Top" CssClass="content" />
+                        </asp:BoundField>
+                        <asp:BoundField DataField="Price" HeaderText="Price" 
+                            DataFormatString="HK${0:n2}" meta:resourcekey="BoundFieldResource4">
+                        <ItemStyle Width="100px" HorizontalAlign="Right" VerticalAlign="Top" CssClass="content" ForeColor="#DE0D13" />
+                        </asp:BoundField>
+                        <%--<asp:BoundField DataField="ShippingFee" HeaderText="Shipping Fee" 
+                            DataFormatString="HK${0:n2}" meta:resourcekey="BoundFieldResource5">
+                        <ItemStyle Width="100px" HorizontalAlign="Right" VerticalAlign="Top" CssClass="content" ForeColor="#DE0D13" />
+                        </asp:BoundField>--%>
+                    </Columns>
+                    <HeaderStyle BackColor="#DADADA" Font-Size="16px" ForeColor="#243220" />
+                </asp:GridView>
+                <br />
+                <hr />
+                <br />
+                <table border="0" cellpadding="0" cellspacing="0" align="left" width="760px">
+                    <tr>
+                        <td width="560px" align="right">
+                            <asp:Label ID="lblTotalAmount" runat="server" Text="Total Amount" ForeColor="#6F7C6B" meta:resourcekey="lblTotalAmountResource1"></asp:Label>
+                        </td>
+                        <td width="100px"></td>
+                        <td width="100px" align="right">
+                            <asp:Label ID="txtTotalAmount" runat="server" ForeColor="#DE0D13" 
+								CssClass="content" meta:resourcekey="txtTotalAmountResource1"></asp:Label>
+                        </td>
+                    </tr>
+                    <tr>
+						<td colspan="3">
+							<asp:Localize ID="locShippingFee" runat="server" Text="* Shipping Fee and Handling Charge is not included" meta:resourcekey="locShippingFeeResource1"></asp:Localize>
+						</td>
+                    </tr>
+                </table>
+                <br />
+                <br />
+                <table border="0" cellpadding="0" cellspacing="0" align="left" width="760px">
+                    <tr>
+                        <td width="380px" align="left" style="padding-left:10px;">
+                            <asp:Button ID="btnContinueShopping" runat="server" Text="選購其他產品" Width="140px" BorderStyle="Solid" 
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnContinueShoppingResource1" />
+                        </td>
+                        <td width="380px" align="right" style="padding-right:10px;">
+                            <asp:Button ID="btnCheckOut" runat="server" Text="前往結算" Width="120px" BorderStyle="Solid" 
+								BorderColor="#D5D5D5" BorderWidth="2px" BackColor="#BFBFBF" ForeColor="White" style="padding:5px" meta:resourcekey="btnCheckOutResource1" />
+                        </td>
+                    </tr>
+                </table>
+                <br /><br /><br /><br />
+                </asp:Panel>
+            </td>
+        </tr>
+    </table>
+    <br />
+    <br />
+</asp:Content>
+

@@ -1,0 +1,51 @@
+﻿<%@ Master Language="VB" MasterPageFile="~/master/MasterPage.master" AutoEventWireup="false" CodeFile="MasterPageInner2.master.vb" Inherits="master_MasterPageInner2" %>
+<%@ Register src="~/control/ChannelControl.ascx" tagname="ChannelControl" tagprefix="uc1" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+	<asp:ContentPlaceHolder ID="head" runat="server"></asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+	<div id="content-left">
+		<asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server"></asp:ContentPlaceHolder>
+	</div>
+	
+    <div id="content-right">
+		<asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server"></asp:ContentPlaceHolder>
+        
+            <div class="section-title">分類廣告</div>
+            <script type="text/javascript"><!--
+                google_ad_client = "ca-pub-7644686126954040";
+                /* MajiTV Home */
+                google_ad_slot = "6987701695";
+                google_ad_width = 300;
+                google_ad_height = 250;
+            //-->
+            </script>
+            <script type="text/javascript"
+            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+
+            <%--<asp:HyperLink runat="server" ImageUrl="~/images/ad01.png"></asp:HyperLink>--%>
+            <div class="section-title">分類廣告</div>
+            <asp:PlaceHolder ID="PlaceHolder1" runat="server" Visible="false">
+            <asp:HyperLink runat="server" ID="lnkAd"></asp:HyperLink>
+            </asp:PlaceHolder>
+             <script type="text/javascript"><!--
+            google_ad_client = "ca-pub-7644686126954040";
+            /* MajiTV Home */
+            google_ad_slot = "6987701695";
+            google_ad_width = 300;
+            google_ad_height = 250;
+            //-->
+            </script>
+            <script type="text/javascript"
+            src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+            </script>
+
+		<asp:ContentPlaceHolder ID="ContentPlaceHolder3" runat="server"></asp:ContentPlaceHolder>
+
+    </div>
+
+
+</asp:Content>
+

@@ -1,0 +1,40 @@
+﻿Imports Utility
+
+Partial Class Team
+    Inherits System.Web.UI.Page
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		If Not IsPostBack Then
+			hfdPageID.Value = 0
+			If Request("id") IsNot Nothing Then
+				hfdPageID.Value = CInt(Request("id"))
+				Bind()
+			ElseIf Request("url") IsNot Nothing Then
+				hfdPageID.Value = (New PageDataSetTableAdapters.PageTableAdapter()).GetPageIDByUrl(Request("url"))
+				Bind()
+			End If
+		End If
+	End Sub
+
+	Protected Sub Bind()
+		'hfdPageID.Value = 0
+		'If (Request.QueryString("id") & "").Length > 0 Then
+		'	hfdPageID.Value = Convert.ToInt32(Request.QueryString("id"))
+		'End If
+
+		'Get Default if no specified page id
+		If Not hfdPageID.Value > 0 Then
+			hfdPageID.Value = (New PageDataSetTableAdapters.PageTableAdapter).GetDefaultPageID(ConfigurationManager.AppSettings("PageIDTeam"))
+		End If
+
+		Dim r As PageDataSet.view_PageRow
+		Dim t As New PageDataSet.view_PageDataTable
+		t = (New PageDataSetTableAdapters.view_PageTableAdapter).GetDataByIDLang(hfdPageID.Value, MyCulture)
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+			ltrContent.Text = r.Content
+		End If
+
+	End Sub
+
+End Class

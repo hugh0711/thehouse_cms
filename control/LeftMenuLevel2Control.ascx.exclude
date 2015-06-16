@@ -1,0 +1,9 @@
+﻿<%@ Control Language="VB" AutoEventWireup="false" CodeFile="LeftMenuLevel2Control.ascx.vb" Inherits="control_LeftMenuLevel2Control" %>
+
+<div>
+    <asp:Image ID="Image1" runat="server" ImageUrl="~/images/title_innovation.jpg" Width="161" Height="80" />
+</div>
+
+<asp:HyperLink ID="HyperLink1" runat="server" ImageUrl="~/images/left_menu_water_solution.jpg" NavigateUrl="~/water-solutions.aspx" Width="161" Height="56"></asp:HyperLink><br />
+<asp:HyperLink ID="HyperLink2" runat="server" ImageUrl="~/images/left_menu_wasterwater_reuse.jpg" NavigateUrl="~/sludge-solutions.aspx" Width="161" Height="60"></asp:HyperLink><br />
+<asp:HyperLink ID="HyperLink3" runat="server" ImageUrl="~/images/left_menu_industrial_water_treatment.jpg" NavigateUrl="~/research-and-innovation.aspx" Width="161" Height="58"></asp:HyperLink><br />

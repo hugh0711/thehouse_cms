@@ -1,0 +1,110 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/backoffice/master/admin.master" AutoEventWireup="false" CodeFile="Copy of CommentList.aspx.vb" Inherits="backoffice_CommentList" %>
+
+<%@ Register assembly="AjaxControlToolkit" namespace="AjaxControlToolkit" tagprefix="asp" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+	<style type="text/css">
+	th { background:#efefef; }
+	td, th { vertical-align:top; text-align:left; }
+</style>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+	<center><h3>Comment List</h3></center>
+<div style="border: 2px dashed #C0C0C0; ">
+Comment Field Set
+<table>
+	<tr>
+		<th>Type</th>
+		<td>
+			<asp:RadioButtonList ID="radCommentType" runat="server" RepeatDirection="Horizontal">
+				<asp:ListItem Text="ALL" Value=""></asp:ListItem>
+				<asp:ListItem Text="PRODUCT" Value="PRODUCT"></asp:ListItem>
+				<asp:ListItem Text="ARTICLES" Value="ARTICLES"></asp:ListItem>
+			</asp:RadioButtonList>
+		</td>
+		<th>User</th>
+		<td>
+			<asp:DropDownList ID="ddlUserID" runat="server" AppendDataBoundItems="True" DataSourceID="dsUser" DataTextField="Name" DataValueField="UserID">
+				<asp:ListItem Text="" Value=""></asp:ListItem>
+			</asp:DropDownList>
+			<asp:SqlDataSource ID="dsUser" runat="server" ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+				SelectCommand="SELECT * FROM [MemberDetail] ORDER BY [Name]"></asp:SqlDataSource>
+		</td>
+	</tr>
+	<tr>
+		<th>Date From</th>
+		<td>
+			<asp:TextBox ID="txtDateFrom" runat="server"></asp:TextBox>
+			<asp:CalendarExtender ID="txtDateFrom_CalendarExtender" runat="server" Enabled="True" TargetControlID="txtDateFrom" ClearTime="True" Format="yyyy-MM-dd" 
+				TodaysDateFormat="yyyy-MM-dd">
+			</asp:CalendarExtender>
+			<asp:CompareValidator ID="CompareValidator1" runat="server" ErrorMessage="Date Incorrect" ControlToValidate="txtDateFrom" Operator="DataTypeCheck" Type="Date" Display="Dynamic"></asp:CompareValidator>
+		</td>
+		<th>Date To</th>
+		<td>
+			<asp:TextBox ID="txtDateTo" runat="server"></asp:TextBox>
+			<asp:CalendarExtender ID="txtDateTo_CalendarExtender" runat="server" Enabled="True" TargetControlID="txtDateTo" ClearTime="True" Format="yyyy-MM-dd" 
+				TodaysDateFormat="yyyy-MM-dd">
+			</asp:CalendarExtender>
+			<asp:CompareValidator ID="CompareValidator2" runat="server" ErrorMessage="Date Incorrect" ControlToValidate="txtDateTo" Operator="DataTypeCheck" Type="Date" Display="Dynamic"></asp:CompareValidator>
+		</td>
+	</tr>
+	<tr>
+		<th><%--Is Inspected--%></th>
+		<td>
+			<%--<asp:RadioButtonList ID="radIsInspected" runat="server" RepeatDirection="Horizontal">
+				<asp:ListItem Text="ALL" Value=""></asp:ListItem>
+				<asp:ListItem Text="Yes" Value="1"></asp:ListItem>
+				<asp:ListItem Text="No" Value="0"></asp:ListItem>
+			</asp:RadioButtonList>--%>
+		</td>
+		<th>Is Disable</th>
+		<td>
+			<asp:RadioButtonList ID="radIsDisable" runat="server" RepeatDirection="Horizontal">
+				<asp:ListItem Text="ALL" Value=""></asp:ListItem>
+				<asp:ListItem Text="Yes" Value="1"></asp:ListItem>
+				<asp:ListItem Text="No" Value="0"></asp:ListItem>
+			</asp:RadioButtonList>
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+		</td>
+		<td colspan="2">
+			<asp:Button ID="btnSearch" runat="server" Text="Search" />
+		</td>
+	</tr>
+</table>
+</div>
+
+	<asp:GridView ID="gvComment" runat="server" AllowPaging="True" AutoGenerateColumns="False" BackColor="White" BorderColor="#DEDFDE" BorderStyle="None" 
+		BorderWidth="1px" CellPadding="4" DataKeyNames="CommentID" DataSourceID="dsComment" ForeColor="Black" GridLines="Vertical">
+		<RowStyle BackColor="#F7F7DE" />
+		<Columns>
+			<asp:BoundField DataField="CommentID" HeaderText="CommentID" InsertVisible="False" ReadOnly="True" SortExpression="CommentID" Visible="False" />
+			<asp:BoundField DataField="CommentDate" DataFormatString="{0:yyyy-MM-dd HH:mm}" HeaderText="CommentDate" SortExpression="CommentDate" />
+			<asp:BoundField DataField="CommentType" HeaderText="CommentType" SortExpression="CommentType" />
+			<asp:BoundField DataField="UserID" HeaderText="UserID" SortExpression="UserID" />
+			<asp:TemplateField HeaderText="CommentDescription" SortExpression="CommentDescription">
+				<ItemTemplate>
+					<asp:Label ID="Label1" runat="server" Text='<%# DisplayCommentDescription(Eval("CommentDescription")) %>'></asp:Label>
+				</ItemTemplate>
+			</asp:TemplateField>
+			<%--<asp:CheckBoxField DataField="IsInspected" HeaderText="IsInspected" SortExpression="IsInspected" />--%>
+			<asp:CheckBoxField DataField="IsDisable" HeaderText="IsDisable" SortExpression="IsDisable" />
+			<asp:TemplateField>
+				<ItemTemplate>
+					<asp:Button ID="btnDetail" runat="server" Text="Detail" CommandName="btnDetail" CommandArgument='<%# Eval("CommentID") %>' />
+				</ItemTemplate>
+			</asp:TemplateField>
+		</Columns>
+		<FooterStyle BackColor="#CCCC99" />
+		<PagerStyle BackColor="#F7F7DE" ForeColor="Black" HorizontalAlign="Right" />
+		<SelectedRowStyle BackColor="#CE5D5A" Font-Bold="True" ForeColor="White" />
+		<HeaderStyle BackColor="#6B696B" Font-Bold="True" ForeColor="Black" />
+		<AlternatingRowStyle BackColor="White" />
+	</asp:GridView>
+	<asp:SqlDataSource ID="dsComment" runat="server" ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+		SelectCommand=""></asp:SqlDataSource>
+</asp:Content>
+

@@ -1,0 +1,74 @@
+﻿Imports Utility
+Imports System.Threading
+Imports System.Globalization
+
+Partial Class ShoppingCart
+	Inherits System.Web.UI.Page
+
+	Protected Overloads Sub InitializeCulture()
+		Thread.CurrentThread.CurrentUICulture = New CultureInfo(Session("MyCulture").ToString())
+		MyBase.InitializeCulture()
+	End Sub
+
+	Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+		If Not IsPostBack Then
+			Bind()
+		End If
+	End Sub
+
+	Protected Sub Bind()
+		Dim Cart As DsCart = GetShoppingCart()
+		gvShoppingCart.DataSource = Cart
+		gvShoppingCart.DataBind()
+		txtTotalAmount.Text = String.Format("HK${0:n2}", Cart.TotalAmount(False))
+
+		If Cart.RowCount <= 0 Then
+			btnCheckOut.Visible = False
+		End If
+
+		If MyCulture() = MyCulture_EN Then
+			btnContinueShopping.Text = "Continue Shopping"
+			btnCheckOut.Text = "Check Out"
+		End If
+	End Sub
+
+	Protected Function DisplayProductImage(ByVal ProductId As Integer) As String
+		Dim s As String = ""
+		Dim r As ProductDataSet.ProductImageRow
+		Dim t As New ProductDataSet.ProductImageDataTable
+		t = (New ProductDataSetTableAdapters.ProductImageTableAdapter).GetDataByProductID(ProductId)
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+			s = System.IO.Path.Combine(ConfigurationManager.AppSettings("ProductThumbnailPath"), r.Url)
+		End If
+		Return s
+	End Function
+
+	Protected Function DisplayProductName(ByVal ProductId As Integer) As String
+		Dim s As String = ""
+		Dim r As ProductDataSet.view_ProductRow
+		Dim t As New ProductDataSet.view_ProductDataTable
+		t = (New ProductDataSetTableAdapters.view_ProductTableAdapter).GetDataByProductId(ProductId, MyCulture)
+		If t.Rows.Count > 0 Then
+			r = t.Rows(0)
+			s = r.ProductName
+		End If
+		Return s
+	End Function
+
+
+	Protected Sub gvShoppingCart_RowCommand(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewCommandEventArgs) Handles gvShoppingCart.RowCommand
+		If e.CommandName = "btnRemove" Then
+			RemoveProductByCartId(e.CommandArgument)
+			Bind()
+		End If
+	End Sub
+
+	Protected Sub btnContinueShopping_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnContinueShopping.Click
+		Response.Redirect("~/Shop.htm")
+	End Sub
+
+	Protected Sub btnCheckOut_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles btnCheckOut.Click
+		Response.Redirect("~/CheckOut.aspx")
+	End Sub
+End Class

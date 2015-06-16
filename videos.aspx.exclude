@@ -1,0 +1,57 @@
+﻿<%@ Page Title="" Language="VB" MasterPageFile="~/master/MasterPageInner.master" AutoEventWireup="false" CodeFile="videos.aspx.vb" Inherits="videos" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" Runat="Server">
+
+        <div class="section-title">
+            <asp:Label runat="server" Text="搜尋"></asp:Label>
+            <span class="section-title-quot">&raquo;</span>
+            <asp:Literal runat="server" ID="txtSearchQuery" ></asp:Literal> 
+        </div>
+        <div>&nbsp;</div>
+        
+            <asp:HiddenField runat="server" id="hfdProgramID" />
+<%--            <asp:SqlDataSource 
+                    ID="dsProgram" runat="server" 
+                    ConnectionString="<%$ ConnectionStrings:MySqlConnection %>" 
+                    
+                SelectCommand="SELECT ProductID, Description, ProductName, MOQUnit FROM view_ProductImage WHERE (Lang = @Lang) AND (CategoryID = @CategoryID) AND Enabled = 1">
+                <SelectParameters>
+                    <asp:SessionParameter Name="Lang" SessionField="MyCulture" Type="String" />
+                                        <asp:ControlParameter ControlID="hfdProgramID" Name="CategoryID" 
+                        PropertyName="Value" Type="Int32" />
+                </SelectParameters>
+            </asp:SqlDataSource>--%>
+
+                <asp:ListView runat="server" ID="lvwVideo">
+                    <LayoutTemplate>
+                        <asp:PlaceHolder runat="server" ID="ItemPlaceHolder"></asp:PlaceHolder>
+                        <div class="pager">
+                        <asp:DataPager runat="server" PageSize="16" PagedControlID="lvwVideo" QueryStringField="p">
+                            <Fields>
+                                <asp:NextPreviousPagerField ShowNextPageButton="false" PreviousPageText="上一頁"  RenderDisabledButtonsAsLabels="true" />
+                                <asp:NumericPagerField ButtonCount="15" />
+                                <asp:NextPreviousPagerField ShowPreviousPageButton="false" NextPageText="下一頁"  RenderDisabledButtonsAsLabels="true" />
+                            </Fields>
+                        </asp:DataPager>
+                        </div>
+                    </LayoutTemplate>
+                    <ItemTemplate>
+                        <asp:Panel ID="Panel1" runat="server" CssClass='<%# "episode" & IIf(Container.DataItemIndex Mod 2 = 1, " even", "") %>'>
+                            <asp:HyperLink ID="lnkImage" runat="server" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>' CssClass="tb"
+                                ImageUrl='<%# VideoClass.GetHQPreview(Eval("MOQUnit")) %>' >
+                            </asp:HyperLink>
+                            <asp:HyperLink ID="HyperLink1" runat="server" CssClass="title" Text='<%# Eval("ProductName") %>'></asp:HyperLink>
+                            <p class="desc"><asp:Literal ID="Literal2" runat="server" Text='<%# Utility.TrimHTML(Eval("Description"), 100) %>'></asp:Literal></p>
+                            <asp:HyperLink ID="HyperLink2" runat="server" Text="Watch" NavigateUrl='<%# String.Format("~/episode.aspx?id={0}", Eval("ProductID")) %>' ImageUrl="~/images/more_blue.png" CssClass="more"></asp:HyperLink>
+                        </asp:Panel>
+
+                    </ItemTemplate>
+                    <EmptyDataTemplate>
+                        <h2>找不到結果</h2>
+                    </EmptyDataTemplate>
+                </asp:ListView>
+
+</asp:Content>
+
